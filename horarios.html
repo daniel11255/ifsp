@@ -4,7 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Professores — Portal 1INFO-2</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@400;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Sora:wght@400;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
   <style>
     :root{
       --bg:#F5F0EA;--surface:#FDFBF8;--surface-2:#ECE7DC;--border:#D9D0C3;
@@ -12,9 +14,9 @@
       --text:#1E1711;--muted:#7C6E62;
       --green:#2D7A50;--green-lt:#D4EDE0;
       --radius:14px;
-      --mono:'JetBrains Mono',monospace;
-      --sans:'Inter',sans-serif;
-      --display:'Playfair Display',serif;
+      --mono:'Space Mono',monospace;
+      --sans:'Plus Jakarta Sans',sans-serif;
+      --display:'Sora',sans-serif;
       --sh:0 1px 3px rgba(30,20,10,.06),0 4px 16px rgba(30,20,10,.06);
     }
     html[data-theme="dark"]{
@@ -24,25 +26,26 @@
       --green:#40A068;--green-lt:#102018;
     }
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-    body{background:var(--bg);font-family:var(--sans);min-height:100vh;color:var(--text);-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-rendering:optimizeLegibility}
+    body{background:var(--bg);font-family:var(--sans);min-height:100vh;color:var(--text);-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
 
     /* NAV */
-    .topnav{position:sticky;top:0;z-index:200;background:rgba(245,240,234,.88);backdrop-filter:blur(20px) saturate(1.8);-webkit-backdrop-filter:blur(20px) saturate(1.8);border-bottom:1px solid var(--border);height:62px;padding:0 24px;display:flex;align-items:center;justify-content:space-between;transition:background .3s}
-    html[data-theme="dark"] .topnav{background:rgba(23,19,16,.9)}
+    .topnav{position:sticky;top:0;z-index:200;background:rgba(245,240,234,.92);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid var(--border);height:60px;padding:0 24px;display:flex;align-items:center;justify-content:space-between}
+    html[data-theme="dark"] .topnav{background:rgba(23,19,16,.92)}
+    @media(max-width:640px){.topnav{backdrop-filter:none;-webkit-backdrop-filter:none;background:var(--surface)}}
     .nav-brand{display:flex;align-items:center;gap:11px;text-decoration:none}
     .nav-logo{width:32px;height:32px;border-radius:8px;background:var(--accent);display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(184,92,42,.35)}
     .nav-logo svg{width:15px;height:15px;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-    .nav-title{font-size:14px;font-weight:700;color:var(--text);letter-spacing:-.01em}
+    .nav-title{font-size:14px;font-weight:700;color:var(--text);letter-spacing:-.01em;font-family:var(--display)}
     .nav-tag{font-family:var(--mono);font-size:10px;background:var(--accent-lt);color:var(--accent);padding:2px 7px;border-radius:5px;border:1px solid var(--border)}
     .nav-links{display:flex;gap:2px;align-items:center}
-    .nav-link{text-decoration:none;background:none;border:none;cursor:pointer;font-family:var(--sans);font-size:13px;font-weight:500;color:var(--muted);padding:6px 11px;border-radius:8px;transition:background .15s,color .15s}
+    .nav-link{text-decoration:none;background:none;border:none;cursor:pointer;font-family:var(--sans);font-size:13px;font-weight:600;color:var(--muted);padding:6px 11px;border-radius:8px;transition:background .15s,color .15s}
     .nav-link:hover{background:var(--surface-2);color:var(--text)}
-    .nav-link.active{background:var(--accent-lt);color:var(--accent);font-weight:600}
+    .nav-link.active{background:var(--accent-lt);color:var(--accent)}
 
     /* BOTTOM NAV */
-    .bottom-nav{display:none;position:fixed;bottom:0;left:0;right:0;z-index:150;background:var(--surface);border-top:1px solid var(--border);padding:6px 0 calc(6px + env(safe-area-inset-bottom));transition:background .3s}
+    .bottom-nav{display:none;position:fixed;bottom:0;left:0;right:0;z-index:150;background:var(--surface);border-top:1px solid var(--border);padding:6px 0 calc(6px + env(safe-area-inset-bottom))}
     .bn-items{display:flex;justify-content:space-around;align-items:center}
-    .bn-link{display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none;color:var(--muted);font-size:10px;font-weight:600;padding:4px 8px;border-radius:8px;transition:color .15s;flex:1;min-width:0;background:none;border:none;cursor:pointer;font-family:var(--sans)}
+    .bn-link{display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none;color:var(--muted);font-size:10px;font-weight:700;padding:4px 8px;border-radius:8px;transition:color .15s;flex:1;min-width:0;background:none;border:none;cursor:pointer;font-family:var(--sans)}
     .bn-link svg{width:20px;height:20px;flex-shrink:0;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
     .bn-link.active{color:var(--accent)}
 
@@ -50,31 +53,67 @@
     .page-header{margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
     .page-title{font-family:var(--display);font-size:24px;font-weight:700;color:var(--text);letter-spacing:-.02em}
     .page-sub{font-family:var(--mono);font-size:11px;color:var(--muted);margin-top:3px}
-    #searchBar{padding:10px 16px;border:1px solid var(--border);border-radius:9px;background:var(--surface);color:var(--text);font-family:var(--sans);font-size:13px;width:100%;max-width:300px;transition:all .2s}
+    #searchBar{padding:10px 16px;border:1px solid var(--border);border-radius:9px;background:var(--surface);color:var(--text);font-family:var(--sans);font-size:13px;font-weight:500;width:100%;max-width:300px;transition:all .2s}
     #searchBar:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(184,92,42,.1)}
     #searchBar::placeholder{color:var(--muted)}
     .table-card{background:var(--surface);border-radius:var(--radius);border:1px solid var(--border);box-shadow:var(--sh);overflow:hidden}
-    .table-responsive{overflow-x:auto}
+    .table-responsive{overflow-x:auto;-webkit-overflow-scrolling:touch}
     table{width:100%;border-collapse:collapse}
     th{background:var(--accent);color:#fff;padding:14px 18px;font-family:var(--mono);font-weight:700;text-transform:uppercase;font-size:10px;letter-spacing:.1em;text-align:left}
-    td{padding:14px 18px;border-bottom:1px solid var(--border);color:var(--text);font-size:13px}
+    td{padding:14px 18px;border-bottom:1px solid var(--border);color:var(--text);font-size:13px;font-weight:500}
     tbody tr:last-child td{border-bottom:none}
     tbody tr:hover td{background:var(--surface-2)}
-    .email-link{color:var(--accent);text-decoration:none;font-weight:500;word-break:break-all}
-    .hl{background:rgba(184,92,42,0.12);color:var(--accent);padding:0;margin:0;border-radius:2px;font-weight:600;display:inline}
-    @keyframes reveal{0%{opacity:0;transform:perspective(800px) rotateX(-12deg) translateY(30px);filter:blur(6px)}100%{opacity:1;transform:perspective(800px) rotateX(0deg) translateY(0);filter:blur(0)}}
-    @keyframes spin{to{transform:rotate(360deg)}}
-    .loader-container{display:none;justify-content:center;align-items:center;padding:40px;width:100%}
-    .spinner{width:32px;height:32px;border:3px solid var(--surface-2);border-top-color:var(--accent);border-radius:50%;animation:spin .6s cubic-bezier(0.5,0.1,0.4,0.9) infinite}
-    .table-responsive{transition:opacity .4s ease}
-    .reveal{animation:reveal 0.8s cubic-bezier(0.22,1,0.36,1) both;transform-origin:center top}
+    .email-link{color:var(--accent);text-decoration:none;font-weight:600;word-break:break-all}
     .email-link:hover{text-decoration:underline}
+    .hl{background:rgba(184,92,42,.12);color:var(--accent);padding:0;margin:0;border-radius:2px;font-weight:700;display:inline}
     .copy-btn{background:var(--surface-2);border:1px solid var(--border);color:var(--muted);padding:5px;border-radius:6px;cursor:pointer;display:inline-flex;align-items:center;transition:all .2s;line-height:0}
     .copy-btn:hover{background:var(--accent);color:#fff;border-color:var(--accent)}
     footer{text-align:center;padding:32px;font-family:var(--mono);font-size:11px;color:var(--muted)}
-    .toast-copy{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:var(--text);color:var(--bg);padding:8px 16px;border-radius:10px;font-size:12px;font-weight:600;z-index:1000;box-shadow:var(--sh);pointer-events:none;animation:toast-in .3s ease-out;transition:opacity .3s}
-    @keyframes toast-in{from{opacity:0;transform:translate(-50%,12px)}to{opacity:1;transform:translate(-50%,0)}}
-    @media(max-width:640px){.nav-links{display:none}.bottom-nav{display:block}.topnav{padding:0 16px}.container{padding:16px 12px 40px}.page-header{flex-direction:column;align-items:flex-start}#searchBar{max-width:100%}table,thead,tbody,th,td,tr{display:block}thead tr{position:absolute;top:-9999px;left:-9999px}tr{border:1px solid var(--border);border-radius:12px;margin-bottom:12px;padding:8px;background:var(--surface)}td{border:none;border-bottom:1px solid var(--border);position:relative;padding-left:40% !important;min-height:44px;display:flex;align-items:center}td:last-child{border-bottom:none}td::before{content:attr(data-label);position:absolute;left:14px;width:35%;font-family:var(--mono);font-weight:600;font-size:10px;color:var(--muted);text-transform:uppercase;white-space:nowrap}}
+    .toast-copy{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:var(--text);color:var(--bg);padding:8px 16px;border-radius:10px;font-size:12px;font-weight:700;z-index:1000;box-shadow:var(--sh);pointer-events:none;animation:toastIn .3s ease-out;transition:opacity .3s;font-family:var(--mono)}
+    @keyframes toastIn{from{opacity:0;transform:translate(-50%,12px)}to{opacity:1;transform:translate(-50%,0)}}
+
+    /* SPINNER */
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .loader-container{display:none;justify-content:center;align-items:center;padding:40px;width:100%}
+    .spinner{width:28px;height:28px;border:3px solid var(--surface-2);border-top-color:var(--accent);border-radius:50%;animation:spin .6s cubic-bezier(0.5,0.1,0.4,0.9) infinite}
+    .table-responsive{transition:opacity .3s ease}
+
+    /* ─── NEW ANIMATIONS ─── */
+    @keyframes popIn{
+      0%{opacity:0;transform:scale(.93) translateY(10px)}
+      60%{opacity:1;transform:scale(1.01) translateY(-2px)}
+      100%{opacity:1;transform:scale(1) translateY(0)}
+    }
+    @keyframes glideUp{
+      from{opacity:0;transform:translateY(20px)}
+      to{opacity:1;transform:translateY(0)}
+    }
+    @keyframes slideLeft{
+      from{opacity:0;transform:translateX(14px)}
+      to{opacity:1;transform:translateX(0)}
+    }
+
+    .page-header{animation:glideUp .38s cubic-bezier(.22,1,.36,1) both}
+    .table-card{animation:popIn .48s .08s cubic-bezier(.22,1,.36,1) both}
+    .reveal{animation:slideLeft .35s cubic-bezier(.22,1,.36,1) both}
+
+    @media(prefers-reduced-motion:reduce){
+      .page-header,.table-card,.reveal{animation:none!important}
+    }
+    @media(max-width:640px){
+      .nav-links{display:none}
+      .bottom-nav{display:block}
+      .topnav{padding:0 16px}
+      .container{padding:16px 12px 80px}
+      .page-header{flex-direction:column;align-items:flex-start}
+      #searchBar{max-width:100%}
+      table,thead,tbody,th,td,tr{display:block}
+      thead tr{position:absolute;top:-9999px;left:-9999px}
+      tr{border:1px solid var(--border);border-radius:12px;margin-bottom:10px;padding:6px;background:var(--surface)}
+      td{border:none;border-bottom:1px solid var(--border);position:relative;padding-left:40% !important;min-height:44px;display:flex;align-items:center}
+      td:last-child{border-bottom:none}
+      td::before{content:attr(data-label);position:absolute;left:14px;width:35%;font-family:var(--mono);font-weight:700;font-size:10px;color:var(--muted);text-transform:uppercase;white-space:nowrap}
+    }
   </style>
   <script>if(localStorage.getItem('theme')==='dark')document.documentElement.setAttribute('data-theme','dark');</script>
 </head>
@@ -141,38 +180,42 @@
   </div>
   <footer>// Portal 1INFO-2</footer>
   <script>
-    function copyEmail(email,btn){navigator.clipboard.writeText(email).then(()=>{const original=btn.innerHTML;btn.innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>';btn.style.color="#0F9D6A";const t=document.createElement('div');t.className='toast-copy';t.textContent='E-mail copiado!';document.body.appendChild(t);setTimeout(()=>{btn.innerHTML=original;btn.style.color="";t.style.opacity='0';setTimeout(()=>t.remove(),300);},2000);});}
+    function copyEmail(email,btn){
+      navigator.clipboard.writeText(email).then(()=>{
+        const orig=btn.innerHTML;
+        btn.innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>';
+        btn.style.color='#0F9D6A';
+        const t=document.createElement('div');t.className='toast-copy';t.textContent='E-mail copiado!';document.body.appendChild(t);
+        setTimeout(()=>{btn.innerHTML=orig;btn.style.color='';t.style.opacity='0';setTimeout(()=>t.remove(),300);},2000);
+      });
+    }
     document.addEventListener('DOMContentLoaded',()=>{
       const tbody=document.getElementById('lista-professores');
       const searchBar=document.getElementById('searchBar');
       const loader=document.getElementById('loader');
       const tableArea=document.querySelector('.table-responsive');
-      const norm = s => s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
-      const highlight = (text, term) => {
-        if (!term) return text;
-        const nText = norm(text);
-        const nTerm = norm(term);
-        const start = nText.indexOf(nTerm);
-        if (start === -1) return text;
-        const end = start + nTerm.length;
-        return text.substring(0, start) + '<mark class="hl">' + text.substring(start, end) + '</mark>' + text.substring(end);
+      const norm=s=>s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
+      const highlight=(text,term)=>{
+        if(!term)return text;
+        const nText=norm(text),nTerm=norm(term),start=nText.indexOf(nTerm);
+        if(start===-1)return text;
+        const end=start+nTerm.length;
+        return text.substring(0,start)+'<mark class="hl">'+text.substring(start,end)+'</mark>'+text.substring(end);
       };
       const render=(filtro='')=>{
         const term=norm(filtro);
         const filtered=window.horariosAtendimento.filter(p=>norm(p.professor).includes(term)||norm(p.materia).includes(term));
-        
-        if (filtered.length === 0) {
-          tbody.innerHTML = `<tr><td colspan="5" style="text-align:center !important;padding:64px 20px !important;color:var(--muted);display:table-cell !important;border:none !important;background:transparent !important">
-            <div style="font-size:40px;margin-bottom:16px;filter:grayscale(1);opacity:0.5">🔍</div>
-            <div style="font-weight:700;font-size:16px;color:var(--text);margin-bottom:4px">Nenhum resultado encontrado</div>
-            <div style="font-size:13px;opacity:0.7">Não encontramos nada para "<span style="color:var(--accent)">${filtro}</span>"</div>
+        if(filtered.length===0){
+          tbody.innerHTML=`<tr><td colspan="5" style="text-align:center !important;padding:64px 20px !important;color:var(--muted);display:table-cell !important;border:none !important;background:transparent !important">
+            <div style="font-size:36px;margin-bottom:14px;filter:grayscale(1);opacity:.45">🔍</div>
+            <div style="font-weight:800;font-size:15px;color:var(--text);margin-bottom:4px">Nenhum resultado encontrado</div>
+            <div style="font-size:13px;opacity:.65">Não encontramos nada para "<span style="color:var(--accent)">${filtro}</span>"</div>
           </td></tr>`;
           return;
         }
-
-        tbody.innerHTML=filtered.map((p, i)=>`<tr class="reveal" style="animation-delay:${i*35}ms">
-          <td data-label="Professor"><strong>${highlight(p.professor, filtro)}</strong></td>
-          <td data-label="Matéria">${highlight(p.materia, filtro)}</td>
+        tbody.innerHTML=filtered.map((p,i)=>`<tr class="reveal" style="animation-delay:${i*30}ms">
+          <td data-label="Professor"><strong>${highlight(p.professor,filtro)}</strong></td>
+          <td data-label="Matéria">${highlight(p.materia,filtro)}</td>
           <td data-label="Horário">${p.horario}</td>
           <td data-label="Sala">${p.sala}</td>
           <td data-label="E-mail"><div style="display:flex;align-items:center;gap:8px"><a href="mailto:${p.email}" class="email-link">${p.email}</a><button class="copy-btn" onclick="copyEmail('${p.email}',this)" title="Copiar e-mail"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button></div></td>
@@ -182,22 +225,16 @@
       let searchTimeout;
       render();
 
-      searchBar.addEventListener('input', () => {
-        const valor = searchBar.value;
-        
-        // Inicia a animação (bolinha girando)
-        tableArea.style.opacity = '0';
-        loader.style.display = 'flex';
-        
-        // Cancela o timer anterior se o usuário continuar digitando
+      searchBar.addEventListener('input',()=>{
+        const valor=searchBar.value;
+        tableArea.style.opacity='0';
+        loader.style.display='flex';
         clearTimeout(searchTimeout);
-        
-        // Define um novo timer de 400ms para processar a busca
-        searchTimeout = setTimeout(() => {
+        searchTimeout=setTimeout(()=>{
           render(valor);
-          loader.style.display = 'none';
-          tableArea.style.opacity = '1';
-        }, 400);
+          loader.style.display='none';
+          tableArea.style.opacity='1';
+        },350);
       });
     });
   </script>

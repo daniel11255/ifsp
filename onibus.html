@@ -4,7 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Ônibus — Portal 1INFO-2</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@400;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Sora:wght@400;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
   <style>
     :root{
       --bg:#F5F0EA;--surface:#FDFBF8;--surface-2:#ECE7DC;--border:#D9D0C3;
@@ -12,9 +14,9 @@
       --text:#1E1711;--muted:#7C6E62;
       --green:#2D7A50;--green-lt:#D4EDE0;
       --radius:14px;
-      --mono:'JetBrains Mono',monospace;
-      --sans:'Inter',sans-serif;
-      --display:'Playfair Display',serif;
+      --mono:'Space Mono',monospace;
+      --sans:'Plus Jakarta Sans',sans-serif;
+      --display:'Sora',sans-serif;
       --sh:0 1px 3px rgba(30,20,10,.06),0 4px 16px rgba(30,20,10,.06);
     }
     html[data-theme="dark"]{
@@ -24,20 +26,21 @@
       --green:#40A068;--green-lt:#102018;
     }
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-    body{background:var(--bg);font-family:var(--sans);min-height:100vh;color:var(--text);-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-rendering:optimizeLegibility}
+    body{background:var(--bg);font-family:var(--sans);min-height:100vh;color:var(--text);-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
 
-    /* NAV PADRONIZADA */
-    .topnav{position:sticky;top:0;z-index:200;background:rgba(245,240,234,.88);backdrop-filter:blur(20px) saturate(1.8);-webkit-backdrop-filter:blur(20px) saturate(1.8);border-bottom:1px solid var(--border);height:62px;padding:0 24px;display:flex;align-items:center;justify-content:space-between}
-    html[data-theme="dark"] .topnav{background:rgba(23,19,16,.9)}
+    /* NAV */
+    .topnav{position:sticky;top:0;z-index:200;background:rgba(245,240,234,.92);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid var(--border);height:60px;padding:0 24px;display:flex;align-items:center;justify-content:space-between}
+    html[data-theme="dark"] .topnav{background:rgba(23,19,16,.92)}
+    @media(max-width:640px){.topnav{backdrop-filter:none;-webkit-backdrop-filter:none;background:var(--surface);padding:0 16px}}
     .nav-brand{display:flex;align-items:center;gap:11px;text-decoration:none}
     .nav-logo{width:32px;height:32px;border-radius:8px;background:var(--accent);display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(184,92,42,.35)}
     .nav-logo svg{width:16px;height:16px;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-    .nav-title{font-size:14px;font-weight:700;color:var(--text);letter-spacing:-.01em}
+    .nav-title{font-size:14px;font-weight:700;color:var(--text);letter-spacing:-.01em;font-family:var(--display)}
     .nav-tag{font-family:var(--mono);font-size:10px;background:var(--accent-lt);color:var(--accent);padding:2px 7px;border-radius:5px;border:1px solid var(--border)}
     .nav-links{display:flex;gap:2px;align-items:center}
-    .nav-link{text-decoration:none;background:none;border:none;cursor:pointer;font-family:var(--sans);font-size:13px;font-weight:500;color:var(--muted);padding:6px 11px;border-radius:8px;transition:background .15s,color .15s}
+    .nav-link{text-decoration:none;background:none;border:none;cursor:pointer;font-family:var(--sans);font-size:13px;font-weight:600;color:var(--muted);padding:6px 11px;border-radius:8px;transition:background .15s,color .15s}
     .nav-link:hover{background:var(--surface-2);color:var(--text)}
-    .nav-link.active{background:var(--accent-lt);color:var(--accent);font-weight:600}
+    .nav-link.active{background:var(--accent-lt);color:var(--accent)}
 
     main{max-width:980px;margin:0 auto;padding:28px 20px 60px}
     .smart-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px}
@@ -45,9 +48,9 @@
     .smart-card.going{border-left:4px solid var(--accent)}
     .smart-card.returning{border-left:4px solid var(--green)}
     .smart-label{font-family:var(--mono);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);display:flex;align-items:center;gap:6px;margin-bottom:5px}
-    .smart-time{font-size:32px;font-weight:800;color:var(--accent);line-height:1;letter-spacing:-.03em}
+    .smart-time{font-size:32px;font-weight:800;color:var(--accent);line-height:1;letter-spacing:-.03em;font-family:var(--display)}
     .smart-time.green{color:var(--green)}
-    .countdown{font-family:var(--mono);font-size:11px;color:var(--muted);background:var(--surface-2);border:1px solid var(--border);padding:5px 12px;border-radius:20px;font-weight:500;white-space:nowrap;flex-shrink:0}
+    .countdown{font-family:var(--mono);font-size:11px;color:var(--muted);background:var(--surface-2);border:1px solid var(--border);padding:5px 12px;border-radius:20px;font-weight:700;white-space:nowrap;flex-shrink:0}
     .status-dot{width:8px;height:8px;border-radius:50%;display:inline-block;flex-shrink:0}
     .status-dot.go{background:var(--accent)}
     .status-dot.ret{background:var(--green)}
@@ -59,49 +62,66 @@
     .panel-icon svg{width:17px;height:17px;fill:none;stroke:var(--accent);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
     .panel-icon.green-icon{background:var(--green-lt);border-color:rgba(15,157,106,.2)}
     .panel-icon.green-icon svg{stroke:var(--green)}
-    .panel-title{font-size:14px;font-weight:700;color:var(--text)}
+    .panel-title{font-size:14px;font-weight:800;color:var(--text)}
     .bus-panel-body{padding:14px 18px 18px}
     .time-section{margin-bottom:14px}
     .time-section:last-child{margin-bottom:0}
     .period-label{font-family:var(--mono);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:var(--muted);margin-bottom:10px;display:flex;align-items:center;gap:8px}
     .period-label::after{content:'';flex:1;height:1px;background:var(--border)}
     .times-grid{display:flex;flex-wrap:wrap;gap:6px}
-    .time-pill{display:inline-flex;align-items:center;gap:5px;padding:5px 10px;border-radius:8px;font-family:var(--mono);font-size:12px;font-weight:600;border:1px solid var(--border);background:var(--surface);color:var(--text);position:relative;transition:all .2s ease}
-    .time-pill:hover{border-color:var(--accent);transform:translateY(-2px)}
-    .time-pill.past{opacity:.5;background:var(--surface-2)}
+    .time-pill{display:inline-flex;align-items:center;gap:5px;padding:5px 10px;border-radius:8px;font-family:var(--mono);font-size:12px;font-weight:700;border:1px solid var(--border);background:var(--surface);color:var(--text);transition:border-color .15s}
+    .time-pill:hover{border-color:var(--accent)}
+    .time-pill.past{opacity:.45;background:var(--surface-2)}
     .time-pill.next-go{background:var(--accent);border-color:var(--accent);color:#fff;transform:scale(1.06)}
     .time-pill.next-ret{background:var(--green);border-color:var(--green);color:#fff;transform:scale(1.06)}
     .pill-tag{font-size:9px;font-weight:700;padding:1px 4px;border-radius:4px;text-transform:uppercase;background:rgba(0,0,0,.08);letter-spacing:.04em}
     .legend-card{margin-top:24px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;box-shadow:var(--sh)}
     .legend-heading{font-family:var(--mono);font-size:10px;font-weight:700;text-transform:uppercase;color:var(--muted);margin-bottom:12px;letter-spacing:.1em}
     .legend-items{display:flex;flex-wrap:wrap;gap:16px}
-    .legend-item{display:flex;align-items:center;gap:10px;font-size:13px;font-weight:500;color:var(--text)}
+    .legend-item{display:flex;align-items:center;gap:10px;font-size:13px;font-weight:600;color:var(--text)}
     .legend-dot{padding:2px 8px;min-width:32px;border-radius:6px;font-family:var(--mono);font-size:10px;font-weight:700;display:inline-flex;align-items:center;justify-content:center}
     .legend-dot.jl{background:var(--accent-lt);color:var(--accent);border:1px solid var(--border)}
     .legend-dot.fc{background:var(--green-lt);color:var(--green);border:1px solid var(--green-lt)}
     .legend-dot.fcv{background:var(--surface-2);color:var(--text);border:1px solid var(--border)}
 
-    /* ANIMATIONS */
-    @keyframes reveal{0%{opacity:0;transform:perspective(800px) rotateX(-12deg) translateY(20px);filter:blur(6px)}100%{opacity:1;transform:perspective(800px) rotateX(0deg) translateY(0);filter:blur(0)}}
-    @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
-    
-    .smart-card:nth-child(1){animation:reveal 0.6s cubic-bezier(0.2,1,0.3,1) both}
-    .smart-card:nth-child(2){animation:reveal 0.6s 0.1s cubic-bezier(0.2,1,0.3,1) both}
-    .bus-panel:nth-child(1){animation:reveal 0.7s 0.2s cubic-bezier(0.2,1,0.3,1) both}
-    .bus-panel:nth-child(2){animation:reveal 0.7s 0.3s cubic-bezier(0.2,1,0.3,1) both}
-    .legend-card{animation:fadeUp 0.6s 0.4s cubic-bezier(0.2,1,0.3,1) both}
-    .reveal-pill{animation:reveal 0.5s cubic-bezier(0.2,1,0.3,1) both}
-
     /* BOTTOM NAV */
-    .bottom-nav{display:none;position:fixed;bottom:0;left:0;right:0;z-index:150;background:var(--surface);border-top:1px solid var(--border);padding:6px 0 calc(6px + env(safe-area-inset-bottom));transition:background .3s}
+    .bottom-nav{display:none;position:fixed;bottom:0;left:0;right:0;z-index:150;background:var(--surface);border-top:1px solid var(--border);padding:6px 0 calc(6px + env(safe-area-inset-bottom))}
     .bn-items{display:flex;justify-content:space-around;align-items:center}
-    .bn-link{display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none;color:var(--muted);font-size:10px;font-weight:600;padding:4px 8px;border-radius:8px;transition:color .15s;flex:1;min-width:0;background:none;border:none;cursor:pointer;font-family:var(--sans)}
+    .bn-link{display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none;color:var(--muted);font-size:10px;font-weight:700;padding:4px 8px;border-radius:8px;transition:color .15s;flex:1;min-width:0;background:none;border:none;cursor:pointer;font-family:var(--sans)}
     .bn-link svg{width:20px;height:20px;flex-shrink:0;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
     .bn-link.active{color:var(--accent)}
 
     footer{text-align:center;padding:32px;font-family:var(--mono);font-size:11px;color:var(--muted)}
+
+    /* ─── NEW ANIMATIONS ─── */
+    @keyframes popIn{
+      0%{opacity:0;transform:scale(.93) translateY(10px)}
+      60%{opacity:1;transform:scale(1.01) translateY(-2px)}
+      100%{opacity:1;transform:scale(1) translateY(0)}
+    }
+    @keyframes glideUp{
+      from{opacity:0;transform:translateY(20px)}
+      to{opacity:1;transform:translateY(0)}
+    }
+    @keyframes slideLeft{
+      from{opacity:0;transform:translateX(14px)}
+      to{opacity:1;transform:translateX(0)}
+    }
+
+    .smart-card:nth-child(1){animation:popIn .45s cubic-bezier(.22,1,.36,1) both}
+    .smart-card:nth-child(2){animation:popIn .45s .08s cubic-bezier(.22,1,.36,1) both}
+    .bus-panel:nth-child(1){animation:glideUp .5s .15s cubic-bezier(.22,1,.36,1) both}
+    .bus-panel:nth-child(2){animation:glideUp .5s .22s cubic-bezier(.22,1,.36,1) both}
+    .legend-card{animation:glideUp .5s .3s cubic-bezier(.22,1,.36,1) both}
+    .reveal-pill{animation:slideLeft .3s cubic-bezier(.22,1,.36,1) both}
+
+    @media(prefers-reduced-motion:reduce){
+      .smart-card,.bus-panel,.legend-card,.reveal-pill{animation:none!important}
+    }
     @media(max-width:680px){
-      .topnav{padding:0 16px}main{padding:20px 12px 48px}.smart-row,.bus-columns{grid-template-columns:1fr}.smart-time{font-size:26px}
+      main{padding:20px 12px 80px}
+      .smart-row,.bus-columns{grid-template-columns:1fr}
+      .smart-time{font-size:28px}
     }
     @media(max-width:640px){.nav-links{display:none}.bottom-nav{display:block}}
   </style>
@@ -142,6 +162,7 @@
       </a>
     </div>
   </nav>
+
   <main>
     <div class="smart-row">
       <div class="smart-card going">
@@ -188,11 +209,11 @@
   <footer>// Portal 1INFO-2</footer>
   <script>
     const BUSES={go:[{t:'05:34',tag:'JL'},{t:'05:59',tag:'JL'},{t:'06:24',tag:'FC VOLVO'},{t:'06:49',tag:'JL'},{t:'07:14',tag:'JL'},{t:'07:44',tag:'JL'},{t:'08:19',tag:'JL'},{t:'08:39',tag:'JL'},{t:'08:59',tag:null},{t:'09:31',tag:null},{t:'10:03',tag:null},{t:'10:34',tag:null},{t:'11:06',tag:null},{t:'11:38',tag:null},{t:'12:10',tag:null},{t:'12:42',tag:null},{t:'13:14',tag:null},{t:'13:46',tag:null},{t:'14:18',tag:null},{t:'14:50',tag:null},{t:'15:22',tag:null},{t:'15:54',tag:null},{t:'16:27',tag:null},{t:'17:17',tag:null},{t:'17:42',tag:null},{t:'18:07',tag:null},{t:'18:37',tag:null},{t:'19:02',tag:null},{t:'19:37',tag:null},{t:'20:12',tag:null},{t:'20:47',tag:null},{t:'21:22',tag:null},{t:'21:57',tag:null},{t:'22:34',tag:null},{t:'23:14',tag:'FC'}],ret:[{t:'05:34',tag:null},{t:'05:59',tag:null},{t:'06:24',tag:null},{t:'06:49',tag:'FC VOLVO'},{t:'07:14',tag:null},{t:'07:39',tag:null},{t:'08:09',tag:null},{t:'08:44',tag:null},{t:'09:04',tag:null},{t:'09:24',tag:null},{t:'09:56',tag:null},{t:'10:28',tag:null},{t:'10:57',tag:null},{t:'11:29',tag:null},{t:'12:01',tag:null},{t:'12:33',tag:null},{t:'13:05',tag:null},{t:'13:37',tag:null},{t:'14:09',tag:null},{t:'14:41',tag:null},{t:'15:13',tag:null},{t:'15:33',tag:null},{t:'16:03',tag:null},{t:'16:28',tag:null},{t:'16:52',tag:null},{t:'17:42',tag:null},{t:'18:12',tag:null},{t:'18:47',tag:null},{t:'19:27',tag:null},{t:'20:02',tag:null},{t:'20:37',tag:null},{t:'21:12',tag:null},{t:'21:47',tag:null},{t:'22:22',tag:null},{t:'22:54',tag:null},{t:'23:34',tag:'FC'}]};
+    function toMins(t){const[h,m]=t.split(':').map(Number);return h*60+m;}
     for(const dir in BUSES)BUSES[dir].forEach(b=>b.m=toMins(b.t));
     const PERIODS=[{label:'Manhã',min:0,max:11*60+59},{label:'Tarde',min:12*60,max:17*60+59},{label:'Noite',min:18*60,max:24*60}];
     const TAG_CLASSES={'JL':'jl','FC VOLVO':'fcv','FC':'fc'};
     const DOM={go:{panel:document.getElementById('panel-go'),time:document.getElementById('smart-time-go'),count:document.getElementById('smart-count-go')},ret:{panel:document.getElementById('panel-ret'),time:document.getElementById('smart-time-ret'),count:document.getElementById('smart-count-ret')}};
-    function toMins(t){const[h,m]=t.split(':').map(Number);return h*60+m;}
     function fmtCountdown(mins){if(mins<1)return'agora';if(mins<60)return`em ${mins} min`;const h=Math.floor(mins/60),m=mins%60;return m===0?`em ${h}h`:`em ${h}h ${m}min`;}
     function renderPanel(dir,nowMins,nextBus){
       let html='';
@@ -200,42 +221,46 @@
         const buses=BUSES[dir].filter(b=>b.m>=period.min&&b.m<=period.max);
         if(!buses.length)continue;
         html+=`<div class="time-section"><div class="period-label">${period.label}</div><div class="times-grid">`;
-        buses.forEach((bus, idx)=>{
+        buses.forEach((bus,idx)=>{
           const isPast=bus.m<=nowMins,isNext=nextBus&&bus.t===nextBus.t;
           const cls=`time-pill reveal-pill ${isPast?'past':''} ${isNext?'next-'+dir:''}`;
           const tagHtml=bus.tag?`<span class="pill-tag ${TAG_CLASSES[bus.tag]||''}">${bus.tag}</span>`:'';
-          const delay = idx * 20; // 20ms de atraso entre cada pílula de horário
-          html+=`<div class="${cls}" style="animation-delay:${delay}ms">${bus.t}${tagHtml}</div>`;
+          html+=`<div class="${cls}" style="animation-delay:${idx*18}ms">${bus.t}${tagHtml}</div>`;
         });
         html+=`</div></div>`;
       }
       DOM[dir].panel.innerHTML=html;
     }
-    function updateSmartCard(dir,next,nowMins){const d=DOM[dir];if(!next){const first=BUSES[dir][0];d.time.textContent='Encerrado';d.count.textContent=first?'retoma às '+first.t:'sem serviço';d.time.style.fontSize='20px';d.time.style.color='var(--muted)';}else{d.time.textContent=next.t;d.count.textContent=fmtCountdown(next.m-nowMins);d.time.style.fontSize='';d.time.style.color='';}}
-    function refresh(){
-      const now=new Date(),nowMins=now.getHours()*60+now.getMinutes(),dow=now.getDay();
-      const isWeekend = (dow === 0 || dow === 6);
-
-      ['go','ret'].forEach(dir=>{
-        // Se for fim de semana, ignora a busca pelo próximo ônibus
-        const nextBus = isWeekend ? null : (BUSES[dir].find(b=>b.m>=nowMins)||null);
-        
-        renderPanel(dir, isWeekend ? -1 : nowMins, nextBus);
-        updateSmartCard(dir, nextBus, nowMins);
-        
-        if(isWeekend) DOM[dir].count.textContent = 'Indisponível hoje';
-      });
-
-      if(isWeekend && !document.getElementById('weekend-alert')){
-        const alert = document.createElement('div');
-        alert.id = 'weekend-alert';
-        alert.style.cssText = 'background:var(--accent-lt); color:var(--accent); padding:16px; border-radius:var(--radius); margin-bottom:24px; font-weight:700; text-align:center; border:1px solid var(--border); animation: fadeUp 0.4s ease;';
-        alert.innerHTML = '⚠️ Atenção: Esta linha de ônibus não opera aos sábados e domingos.';
-        document.querySelector('main').prepend(alert);
-        document.querySelectorAll('.bus-panel').forEach(p => p.style.opacity = '0.5');
+    function updateSmartCard(dir,next,nowMins){
+      const d=DOM[dir];
+      if(!next){
+        const first=BUSES[dir][0];
+        d.time.textContent='Encerrado';d.count.textContent=first?'retoma às '+first.t:'sem serviço';
+        d.time.style.fontSize='20px';d.time.style.color='var(--muted)';
+      } else {
+        d.time.textContent=next.t;d.count.textContent=fmtCountdown(next.m-nowMins);
+        d.time.style.fontSize='';d.time.style.color='';
       }
     }
-    refresh(); setInterval(refresh, 30000);
+    function refresh(){
+      const now=new Date(),nowMins=now.getHours()*60+now.getMinutes(),dow=now.getDay();
+      const isWeekend=(dow===0||dow===6);
+      ['go','ret'].forEach(dir=>{
+        const nextBus=isWeekend?null:(BUSES[dir].find(b=>b.m>=nowMins)||null);
+        renderPanel(dir,isWeekend?-1:nowMins,nextBus);
+        updateSmartCard(dir,nextBus,nowMins);
+        if(isWeekend)DOM[dir].count.textContent='Indisponível hoje';
+      });
+      if(isWeekend&&!document.getElementById('weekend-alert')){
+        const alert=document.createElement('div');
+        alert.id='weekend-alert';
+        alert.style.cssText='background:var(--accent-lt);color:var(--accent);padding:16px;border-radius:var(--radius);margin-bottom:24px;font-weight:800;text-align:center;border:1px solid var(--border);animation:glideUp .4s ease';
+        alert.innerHTML='⚠️ Esta linha não opera aos sábados e domingos.';
+        document.querySelector('main').prepend(alert);
+        document.querySelectorAll('.bus-panel').forEach(p=>p.style.opacity='.5');
+      }
+    }
+    refresh();setInterval(refresh,30000);
   </script>
 </body>
 </html>

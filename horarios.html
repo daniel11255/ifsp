@@ -149,23 +149,24 @@
       const tableArea=document.querySelector('.table-responsive');
       const norm = s => s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
       const highlight = (text, term) => {
-        if (!term) return text;
+        const cleanTerm = term.trim();
+        if (!cleanTerm) return text;
         const nText = norm(text);
-        const nTerm = norm(term);
+        const nTerm = norm(cleanTerm);
         const start = nText.indexOf(nTerm);
         if (start === -1) return text;
         const end = start + nTerm.length;
         return text.substring(0, start) + '<mark class="hl">' + text.substring(start, end) + '</mark>' + text.substring(end);
       };
       const render=(filtro='')=>{
-        const term=norm(filtro);
+        const term=norm(filtro).trim();
         const filtered=window.horariosAtendimento.filter(p=>norm(p.professor).includes(term)||norm(p.materia).includes(term));
         
         if (filtered.length === 0) {
           tbody.innerHTML = `<tr><td colspan="5" style="text-align:center !important;padding:64px 20px !important;color:var(--muted);display:table-cell !important;border:none !important;background:transparent !important">
             <div style="font-size:40px;margin-bottom:16px;filter:grayscale(1);opacity:0.5">🔍</div>
             <div style="font-weight:700;font-size:16px;color:var(--text);margin-bottom:4px">Nenhum resultado encontrado</div>
-            <div style="font-size:13px;opacity:0.7">Não encontramos nada para "<span style="color:var(--accent)">${filtro}</span>"</div>
+            <div style="font-size:13px;opacity:0.7">Não encontramos nada para "<span style="color:var(--accent)">${filtro.trim()}</span>"</div>
           </td></tr>`;
           return;
         }

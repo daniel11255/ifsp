@@ -17,7 +17,6 @@
       --mono:'JetBrains Mono',monospace;
       --sans:'Inter',sans-serif;
       --display:'Playfair Display',serif;
-      --accent-rgb: 184,92,42; /* RGB para uso em rgba() */
       --sh:0 1px 3px rgba(30,20,10,.06),0 4px 16px rgba(30,20,10,.06);
       --sh-hover:0 8px 28px rgba(184,92,42,.15),0 2px 8px rgba(30,20,10,.08);
     }
@@ -60,8 +59,7 @@
 
     /* CLOCK & EVENT STRIP */
     .top-strip{display:grid;grid-template-columns:1fr;gap:14px;margin-bottom:16px;align-items:stretch}
-    .clock-block{
-      background: linear-gradient(135deg, var(--accent), var(--accent-dk)); /* Gradiente mais dinâmico */
+    .clock-block{background:var(--accent);
       color:#fff;
       border-radius:var(--radius);
       padding:22px 24px;
@@ -69,16 +67,15 @@
       flex-direction:column;
       justify-content:center;
       min-width:164px;
-      box-shadow:0 4px 20px rgba(var(--accent-rgb),.3); /* Sombra inicial */
+      box-shadow:0 4px 20px rgba(184,92,42,.3);
       position:relative;
       overflow:hidden;
-      animation: clock-glow 4s ease-in-out infinite alternate; /* Animação de brilho */
     }
     .clock-block::after{content:'';position:absolute;bottom:-30px;right:-30px;width:110px;height:110px;border:30px solid rgba(255,255,255,.07);border-radius:50%}
-    .clock-time{font-family:var(--mono);font-size:42px;font-weight:700;letter-spacing:-.04em;line-height:1;text-shadow:0 2px 4px rgba(0,0,0,0.2)} /* Hora maior e mais negrito com sombra */
-    .clock-weekday{font-size:13px;font-weight:700;opacity:1;margin-top:8px;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,0.85)} /* Dia da semana mais visível */
-    .clock-date{font-family:var(--mono);font-size:11px;opacity:.7;margin-top:3px} /* Data um pouco mais visível */
-    html[data-theme="dark"] .clock-block{background:linear-gradient(135deg,#3A1C0C 0%,#5A3020 100%)} /* Gradiente invertido para tema escuro */
+    .clock-time{font-family:var(--mono);font-size:38px;font-weight:500;letter-spacing:-.03em;line-height:1}
+    .clock-weekday{font-size:11px;font-weight:700;opacity:.7;margin-top:8px;text-transform:uppercase;letter-spacing:.1em}
+    .clock-date{font-family:var(--mono);font-size:11px;opacity:.55;margin-top:3px}
+    html[data-theme="dark"] .clock-block{background:linear-gradient(135deg,#5A3020 0%,#3A1C0C 100%)}
 
     .event-block{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px 22px;box-shadow:var(--sh);display:none;align-items:center;gap:16px}
     .event-block.visible{display:flex}
@@ -106,6 +103,7 @@
     .sched-row.live::before{background:var(--green)}
     .sched-row.next-up::before{background:var(--accent)}
     .sched-row.done{opacity:.42}
+    .class-progress-bar{position:absolute;bottom:0;left:0;height:2px;background:var(--green);transition:width 1s linear;opacity:0.6}
     .sched-time{font-family:var(--mono);font-size:12px;font-weight:500;color:var(--muted);white-space:nowrap}
     .sched-row.live .sched-time{color:var(--green);font-weight:600}
     .sched-row.next-up .sched-time{color:var(--accent);font-weight:600}
@@ -126,26 +124,24 @@
     .section-label{font-family:var(--mono);font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);margin-bottom:12px}
 
     /* CARDS GRID */
-    /* CARDS GRID - BENTO STYLE */
-    .cards-grid{display:grid;grid-template-columns:repeat(2, 1fr);gap:16px}
-    .feature-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--sh);text-decoration:none;color:inherit;padding:24px;display:flex;flex-direction:column;gap:18px;cursor:pointer;transition:all .3s cubic-bezier(.23,1,0.32,1)}
+    /* CARDS GRID - SYMMETRICAL */
+    .cards-grid{display:grid;grid-template-columns:repeat(3, 1fr);gap:16px}
+    .feature-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--sh);text-decoration:none;color:inherit;padding:24px;display:flex;flex-direction:column;cursor:pointer;transition:all .3s cubic-bezier(.23,1,0.32,1);height:100%}
     .feature-card:hover{transform:translateY(-6px);box-shadow:var(--sh-hover);border-color:var(--accent)}
     
-    .feature-card.card-main{grid-column:span 2;flex-direction:row;align-items:center;padding:28px}
-    
-    .card-icon{width:52px;height:52px;border-radius:13px;flex-shrink:0;background:var(--accent-lt);display:flex;align-items:center;justify-content:center;border:1px solid rgba(var(--accent-rgb), 0.1)}
+    .card-icon{width:48px;height:48px;border-radius:12px;flex-shrink:0;background:var(--accent-lt);display:flex;align-items:center;justify-content:center;border:1px solid rgba(var(--accent-rgb), 0.1);margin-bottom:16px}
     .card-icon svg{width:24px;height:24px;fill:none;stroke:var(--accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
     
-    /* Cores específicas Bento */
+    /* Cores específicas por categoria */
     .card-bus .card-icon{background:var(--green-lt);border-color:rgba(40,120,80,0.1)}
     .card-bus .card-icon svg{stroke:var(--green)}
     .card-profs .card-icon{background:var(--amber-lt);border-color:rgba(198,140,26,0.1)}
     .card-profs .card-icon svg{stroke:var(--amber)}
 
-    .card-body{flex:1;min-width:0}
-    .card-title{font-size:17px;font-weight:700;color:var(--text);margin-bottom:6px;letter-spacing:-.02em}
-    .card-desc{font-size:13px;color:var(--muted);line-height:1.5}
-    .card-cta{margin-top:14px;font-family:var(--mono);font-size:10px;font-weight:700;color:var(--accent);letter-spacing:.06em;text-transform:uppercase;display:inline-flex;align-items:center;gap:6px}
+    .card-body{flex:1;display:flex;flex-direction:column}
+    .card-title{font-size:16px;font-weight:700;color:var(--text);margin-bottom:8px;letter-spacing:-.01em}
+    .card-desc{font-size:12.5px;color:var(--muted);line-height:1.5;margin-bottom:16px}
+    .card-cta{margin-top:auto;font-family:var(--mono);font-size:10px;font-weight:700;color:var(--accent);letter-spacing:.06em;text-transform:uppercase;display:inline-flex;align-items:center;gap:6px;padding-top:12px;border-top:1px solid var(--border)}
     .card-cta svg{width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;transition:transform .2s}
     .feature-card:hover .card-cta svg{transform:translateX(5px)}
     
@@ -159,10 +155,7 @@
     @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
     @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
     @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.75)}}
-    @keyframes clock-glow { /* Animação de brilho para o relógio */
-      0% { box-shadow: 0 4px 20px rgba(var(--accent-rgb),.3); }
-      100% { box-shadow: 0 6px 28px rgba(var(--accent-rgb),.45), 0 2px 10px rgba(var(--accent-rgb),.2); }
-    }
+    
     @keyframes pulse-ring{0%{box-shadow:0 0 0 0 rgba(198,140,26,.4)}70%{box-shadow:0 0 0 8px rgba(198,140,26,0)}100%{box-shadow:0 0 0 0 rgba(198,140,26,0)}}
     .top-strip{animation:fadeUp .45s cubic-bezier(.22,1,.36,1) both}
     .schedule-card{animation:fadeUp .45s .08s cubic-bezier(.22,1,.36,1) both}
@@ -176,10 +169,10 @@
     /* RESPONSIVE */
     @media(max-width:680px){
       .top-strip{grid-template-columns:1fr}
-      .clock-block{flex-direction:row;align-items:center;gap:16px;min-width:unset;padding:16px 20px}
-      .clock-time{font-size:32px}
-      .cards-grid{grid-template-columns:1fr;gap:12px}
-      .feature-card.card-main{flex-direction:column;align-items:flex-start;padding:22px}
+      .clock-block{flex-direction:column;align-items:flex-start;gap:unset;min-width:164px;padding:22px 24px}
+      .clock-time{font-size:38px}
+      .cards-grid{grid-template-columns:1fr;gap:14px}
+      .feature-card{padding:20px}
       .sched-row{grid-template-columns:116px 1fr auto;gap:10px;padding:13px 16px}
       .schedule-header{padding:14px 16px 12px}
       .dashboard{padding:16px 14px 20px}
@@ -239,7 +232,7 @@
     <div class="schedule-card">
       <div class="schedule-header">
         <div class="schedule-header-left">
-          <span class="schedule-eyebrow">Aulas de hoje</span>
+          <span class="schedule-eyebrow">Próximas Aulas</span>
           <span class="schedule-today-badge" id="schedule-day-badge">---</span>
         </div>
         <div class="schedule-header-right">
@@ -254,7 +247,7 @@
 
     <div class="section-label">Acesso Rápido</div>
     <div class="cards-grid">
-      <a href="aulas.html" class="feature-card card-main">
+      <a href="aulas.html" class="feature-card">
         <div class="card-icon"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
         <div class="card-body">
           <div class="card-title">Grade de Aulas</div>
@@ -271,7 +264,7 @@
         </div>
       </a>
       <a href="horarios.html" class="feature-card card-profs">
-        <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-8 0v2"/><circle cx="12" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+        <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-8 0v2"/><circle cx="12" cy="7" r="4"/></svg></div>
         <div class="card-body">
           <div class="card-title">Atendimento de Professores</div>
           <div class="card-desc">Horários e e-mails de todos os professores disponíveis para dúvidas.</div>
@@ -315,21 +308,48 @@
         effectiveDow = window.sabadosLetivos[todayKey];
       }
 
-      const today=SCHEDULE[effectiveDow]||[];
+      let displayDow = effectiveDow;
+      let dayClasses = SCHEDULE[displayDow] || [];
+      let isFutureDay = false;
+
+      // Se o dia acabou ou não tem aula, busca o próximo dia letivo
+      if (dayClasses.length === 0 || mins >= toMins(dayClasses[dayClasses.length-1].end)) {
+        for (let i = 1; i <= 7; i++) {
+          let next = (effectiveDow + i) % 7;
+          if (SCHEDULE[next] && SCHEDULE[next].length > 0) {
+            displayDow = next;
+            dayClasses = SCHEDULE[next];
+            isFutureDay = true;
+            break;
+          }
+        }
+      }
+
       const list=document.getElementById('today-schedule');
-      document.getElementById('schedule-day-badge').textContent=effectiveDow !== dow ? DAYS_PT[effectiveDow] + ' (Sáb. Letivo)' : DAYS_PT[dow];
-      if(!today.length){list.innerHTML='<div class="schedule-empty"><div class="schedule-empty-icon">🎉</div><div class="schedule-empty-text">Sem aulas hoje</div><div class="schedule-empty-sub">Aproveite o descanso!</div></div>';document.getElementById('schedule-count').textContent='';return;}
-      const remaining=today.filter(c=>toMins(c.end)>mins).length;
-      document.getElementById('schedule-count').textContent=remaining>0?remaining+' restante'+(remaining>1?'s':''):'Todas concluídas';
+
+      const badgeText = isFutureDay ? (displayDow === 1 ? 'Segunda-feira' : DAYS_PT[displayDow]) : (effectiveDow !== dow ? DAYS_PT[effectiveDow] + ' (Sáb. Letivo)' : DAYS_PT[dow]);
+      document.getElementById('schedule-day-badge').textContent = badgeText;
+      
+      const remaining = isFutureDay ? dayClasses.length : dayClasses.filter(c => toMins(c.end) > mins).length;
+      const countText = remaining + (isFutureDay ? ' aulas programadas' : ' restante(s) hoje');
+      document.getElementById('schedule-count').textContent = countText;
+
       let markedNext=false;
-      list.innerHTML=today.map(c=>{
+      list.innerHTML=dayClasses.map(c=>{
         const startM=toMins(c.start),endM=toMins(c.end);
-        let rowClass='',pillClass='',pillText='';
-        if(mins>=startM&&mins<endM){rowClass='live';pillClass='pill-live';pillText='<span class="live-dot"></span>Em aula';}
-        else if(mins>=endM){rowClass='done';pillClass='pill-done';pillText='✓ Concluída';}
-        else if(!markedNext){rowClass='upcoming next-up';pillClass='pill-next';pillText='A seguir';markedNext=true;}
-        else{rowClass='upcoming';pillClass='pill-later';pillText='';}
-        return`<div class="sched-row ${rowClass}"><div class="sched-time">${c.start} — ${c.end}</div><div class="sched-name">${c.label}</div><span class="sched-pill ${pillClass}">${pillText}</span></div>`;
+        let rowClass='',pillClass='',pillText='',progressHtml='';
+        if(!isFutureDay && mins>=startM&&mins<endM){
+          rowClass='live';pillClass='pill-live';pillText='<span class="live-dot"></span>Em aula agora';
+          const pct = ((mins - startM) / (endM - startM)) * 100;
+          progressHtml = `<div class="class-progress-bar" style="width:${pct}%"></div>`;
+        }
+        else if(!isFutureDay && mins>=endM){rowClass='done';pillClass='pill-done';pillText='Concluída';}
+        else {
+          rowClass='upcoming';
+          if(!markedNext){rowClass+=' next-up';markedNext=true;}
+          pillClass='pill-next';pillText=`Inicia às ${c.start}`;
+        }
+        return`<div class="sched-row ${rowClass}">${progressHtml}<div class="sched-time">${c.start} — ${c.end}</div><div class="sched-name">${c.label}</div><span class="sched-pill ${pillClass}">${pillText}</span></div>`;
       }).join('');
     }
 

@@ -49,9 +49,10 @@
     .legend-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
     .today-banner{background:var(--accent-lt);border:1px solid var(--border);border-radius:var(--radius);padding:14px 18px;margin-bottom:16px;display:none;align-items:center;gap:10px;flex-wrap:wrap}
     .today-banner.visible{display:flex}
-    .today-banner-label{font-family:var(--mono);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);flex-shrink:0}
-    .today-classes{display:flex;gap:6px;flex-wrap:wrap}
-    .today-chip{font-size:12px;font-weight:600;padding:3px 10px;border-radius:20px;background:var(--surface);border:1px solid var(--border);color:var(--text)}
+    .today-banner-label{font-family:var(--mono);font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.12em;color:var(--accent);flex-shrink:0}
+    .today-classes{display:flex;gap:10px;flex-wrap:wrap}
+    .today-chip{font-size:13px;font-weight:600;padding:8px 16px;border-radius:12px;background:var(--surface);border:1px solid var(--border);color:var(--text);display:inline-flex;flex-direction:column;line-height:1.2;gap:2px}
+    .today-chip-status{font-size:9px;font-weight:700;text-transform:uppercase;opacity:0.7;letter-spacing:0.04em}
     .today-chip.live{background:var(--accent);border-color:var(--accent);color:#fff}
     .schedule-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--sh);overflow:hidden}
     .card-toolbar{padding:14px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:flex-end;gap:8px}
@@ -219,42 +220,113 @@
     const now=new Date(),dow=now.getDay(),nowMins=now.getHours()*60+now.getMinutes();
     if(dow>=1&&dow<=5){document.querySelectorAll('th[data-dow]').forEach(th=>{if(Number(th.dataset.dow)===dow)th.classList.add('today-col');});document.querySelectorAll('tbody tr').forEach(row=>{const cells=row.querySelectorAll('td');if(cells[dow])cells[dow].classList.add('today-col');});}
     document.querySelectorAll('tbody tr[data-start]').forEach(row=>{const s=toMins(row.dataset.start),e=toMins(row.dataset.end);if(nowMins>=s&&nowMins<e){const tc=row.querySelector('.time-cell');tc.classList.add('live-row');const badge=document.createElement('div');badge.className='live-badge';badge.innerHTML='<div class="live-dot"></div> agora';tc.appendChild(badge);}});
-    if(dow>=1&&dow<=5){
-      const todayClasses=SCHEDULE[dow]||[];
-      if(todayClasses.length){const banner=document.getElementById('today-banner');document.getElementById('banner-label').textContent=DAYS_PT[dow]+' —';const box=document.getElementById('banner-classes');todayClasses.forEach(c=>{const isLive=nowMins>=toMins(c.start)&&nowMins<toMins(c.end);const chip=document.createElement('span');chip.className='today-chip'+(isLive?' live':'');chip.textContent=SUBJECTS[c.code]?SUBJECTS[c.code].name:c.code;box.appendChild(chip);});banner.classList.add('visible');}
-    } else {
+    function updateBanner(){
+      const n=new Date(),d=n.getDay(),m=n.getHours()*60+n.getMinutes();
       const banner=document.getElementById('today-banner');
-      document.getElementById('banner-label').textContent=DAYS_PT[dow]+' —';
-      document.getElementById('banner-classes').innerHTML='<span class="today-chip">Sem aulas regulares hoje</span>';
+      const label=document.getElementById('banner-label');
+      const box=document.getElementById('banner-classes');
+      
+      let targetDow = d;
+      let classes = SCHEDULE[targetDow] || [];
+      const allDone = classes.length > 0 && m >= toMins(classes[classes.length-1].end);
+      
+      if (classes.length === 0 || allDone) {
+        for (let i = 1; i <= 7; i++) {
+          let next = (d + i) % 7;
+          if (SCHEDULE[next] && SCHEDULE[next].length > 0) {
+            targetDow = next;
+            classes = SCHEDULE[next];
+            break;
+          }
+        }
+      }
+      const isFutureDay = targetDow !== d;
+      label.textContent = isFutureDay ? `Próximas (${DAYS_PT[targetDow]}) —` : 'Próximas Aulas —';
+      box.innerHTML = '';
+      classes.forEach(c => {
+        const sM=toMins(c.start), eM=toMins(c.end);
+        const isLive = !isFutureDay && m >= sM && m < eM;
+        const isPast = !isFutureDay && m >= eM;
+        const chip = document.createElement('div');
+        chip.className = 'today-chip' + (isLive ? ' live' : '');
+        const status = isLive ? 'Em aula agora' : (isPast ? 'Concluída' : `Inicia às ${c.start}`);
+        const name = SUBJECTS[c.code] ? SUBJECTS[c.code].name : c.code;
+        chip.innerHTML = `<span class="today-chip-status">${status}</span><span>${name}</span>`;
+        box.appendChild(chip);
+      });
       banner.classList.add('visible');
     }
+    updateBanner(); setInterval(updateBanner, 30000);
     const legend=document.getElementById('legend'),seen=new Set();
     document.querySelectorAll('.subj-pill[data-code]').forEach(el=>{const code=el.dataset.code;if(!seen.has(code)&&SUBJECTS[code]){seen.add(code);const meta=SUBJECTS[code];const chip=document.createElement('div');chip.className='legend-chip '+meta.cls;chip.innerHTML=`<span class="legend-dot" style="background:${meta.dot}"></span>${meta.name}`;legend.appendChild(chip);}});
-    document.getElementById('export-pdf').addEventListener('click', async function() {
+    document.getElementById('export-pdf').addEventListener('click', async function () {
       const btn = this;
+      const originalText = btn.textContent;
+
       btn.disabled = true;
-      btn.textContent = '⏳ Gerando...';
+      btn.textContent = '⏳ Processando...';
 
-      const card = document.querySelector('.schedule-card');
-      const wrap = card.querySelector('.table-wrap');
-      const pc = card.style.overflow, pw = wrap.style.overflowX;
+      // 1. Construir um container HTML limpo para o PDF
+      const pdfContainer = document.createElement('div');
+      pdfContainer.style.padding = '20px';
+      pdfContainer.style.backgroundColor = '#ffffff';
+      pdfContainer.style.color = '#333333';
+      pdfContainer.style.fontFamily = 'Arial, sans-serif';
 
-      card.style.overflow = 'visible';
-      wrap.style.overflowX = 'visible';
+      // 2. Adicionar Cabeçalho
+      let content = `<h1 style="text-align:center; color:#B85C2A; margin-bottom:20px;">Grade de Horários - 1INFO-2</h1>`;
+
+      // 3. Criar a Tabela (Simples e Compatível)
+      content += `<table border="1" style="width:100%; border-collapse:collapse; text-align:center; font-size:12px;">`;
+      
+      // Headers
+      content += `<tr style="background-color:#F4E2D2; color:#8C401C;">
+        <th style="padding:10px; border:1px solid #D9D0C3;">Horário</th>
+        <th style="padding:10px; border:1px solid #D9D0C3;">Segunda</th>
+        <th style="padding:10px; border:1px solid #D9D0C3;">Terça</th>
+        <th style="padding:10px; border:1px solid #D9D0C3;">Quarta</th>
+        <th style="padding:10px; border:1px solid #D9D0C3;">Quinta</th>
+        <th style="padding:10px; border:1px solid #D9D0C3;">Sexta</th>
+      </tr>`;
+
+      // Linhas da Tabela
+      document.querySelectorAll('tbody tr').forEach(row => {
+        content += `<tr>`;
+        row.querySelectorAll('td').forEach((td, index) => {
+          const pill = td.querySelector('.subj-pill');
+          let text = td.innerText.trim();
+          let bgColor = index === 0 ? '#ECE7DC' : '#ffffff';
+          let textColor = '#333333';
+          
+          if (pill && pill.dataset.code && SUBJECTS[pill.dataset.code]) {
+            bgColor = SUBJECTS[pill.dataset.code].dot + '22'; // 22 adiciona transparência (estilo pastel)
+            textColor = SUBJECTS[pill.dataset.code].dot;
+          }
+          content += `<td style="padding:8px; border:1px solid #D9D0C3; background-color:${bgColor}; color:${textColor}; font-weight:${index===0?'bold':'normal'};">${text}</td>`;
+        });
+        content += `</tr>`;
+      });
+
+      content += `</table>`;
+      pdfContainer.innerHTML = content;
+
+      // 4. Configurações do html2pdf
+      const opt = {
+        margin: [10, 10],
+        filename: 'grade-horaria-1INFO2.pdf',
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true, logging: false },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' }
+      };
 
       try {
-        await html2pdf().set({
-          margin: [8, 10],
-          filename: 'grade-horaria-1INFO2.pdf',
-          image: { type: 'jpeg', quality: 0.98 },
-          html2canvas: { scale: 2, useCORS: true, scrollX: 0, scrollY: 0 },
-          jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' }
-        }).from(document.querySelector('main')).save();
+        await html2pdf().set(opt).from(pdfContainer).save();
+      } catch (err) {
+        console.error("Erro ao gerar PDF:", err);
+        alert("Erro ao gerar o PDF. Tente novamente.");
       } finally {
-        card.style.overflow = pc;
-        wrap.style.overflowX = pw;
         btn.disabled = false;
-        btn.textContent = '⬇ Exportar PDF';
+        btn.textContent = originalText;
       }
     });
   </script>

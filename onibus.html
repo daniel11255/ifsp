@@ -186,7 +186,6 @@
     </div>
   </main>
   <footer>// Portal 1INFO-2</footer>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   <script>
     const BUSES={go:[{t:'05:34',tag:'JL'},{t:'05:59',tag:'JL'},{t:'06:24',tag:'FC VOLVO'},{t:'06:49',tag:'JL'},{t:'07:14',tag:'JL'},{t:'07:44',tag:'JL'},{t:'08:19',tag:'JL'},{t:'08:39',tag:'JL'},{t:'08:59',tag:null},{t:'09:31',tag:null},{t:'10:03',tag:null},{t:'10:34',tag:null},{t:'11:06',tag:null},{t:'11:38',tag:null},{t:'12:10',tag:null},{t:'12:42',tag:null},{t:'13:14',tag:null},{t:'13:46',tag:null},{t:'14:18',tag:null},{t:'14:50',tag:null},{t:'15:22',tag:null},{t:'15:54',tag:null},{t:'16:27',tag:null},{t:'17:17',tag:null},{t:'17:42',tag:null},{t:'18:07',tag:null},{t:'18:37',tag:null},{t:'19:02',tag:null},{t:'19:37',tag:null},{t:'20:12',tag:null},{t:'20:47',tag:null},{t:'21:22',tag:null},{t:'21:57',tag:null},{t:'22:34',tag:null},{t:'23:14',tag:'FC'}],ret:[{t:'05:34',tag:null},{t:'05:59',tag:null},{t:'06:24',tag:null},{t:'06:49',tag:'FC VOLVO'},{t:'07:14',tag:null},{t:'07:39',tag:null},{t:'08:09',tag:null},{t:'08:44',tag:null},{t:'09:04',tag:null},{t:'09:24',tag:null},{t:'09:56',tag:null},{t:'10:28',tag:null},{t:'10:57',tag:null},{t:'11:29',tag:null},{t:'12:01',tag:null},{t:'12:33',tag:null},{t:'13:05',tag:null},{t:'13:37',tag:null},{t:'14:09',tag:null},{t:'14:41',tag:null},{t:'15:13',tag:null},{t:'15:33',tag:null},{t:'16:03',tag:null},{t:'16:28',tag:null},{t:'16:52',tag:null},{t:'17:42',tag:null},{t:'18:12',tag:null},{t:'18:47',tag:null},{t:'19:27',tag:null},{t:'20:02',tag:null},{t:'20:37',tag:null},{t:'21:12',tag:null},{t:'21:47',tag:null},{t:'22:22',tag:null},{t:'22:54',tag:null},{t:'23:34',tag:'FC'}]};
     for(const dir in BUSES)BUSES[dir].forEach(b=>b.m=toMins(b.t));
@@ -236,7 +235,7 @@
         document.querySelectorAll('.bus-panel').forEach(p => p.style.opacity = '0.5');
       }
     }
-    refresh();setInterval(refresh,30000);
+    refresh(); setInterval(refresh, 30000);
   </script>
 </body>
 </html>

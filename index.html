@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portal | 1INFO-2</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@400;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#F5F0EA;--surface:#FDFBF8;--surface-2:#ECE7DC;--border:#D9D0C3;
+      --accent:#B85C2A;--accent-lt:#F4E2D2;--accent-dk:#8C401C;
+      --text:#1E1711;--muted:#7C6E62;
+      --green:#2D7A50;--green-lt:#D4EDE0;
+      --amber:#C68C1A;--amber-lt:#FBF0D0;
+      --slate:#94A3B8;--slate-lt:#F1F5F9;
+      --radius:14px;
+      --mono:'JetBrains Mono',monospace;
+      --sans:'Inter',sans-serif;
+      --display:'Playfair Display',serif;
+      --accent-rgb: 184,92,42; /* RGB para uso em rgba() */
+      --sh:0 1px 3px rgba(30,20,10,.06),0 4px 16px rgba(30,20,10,.06);
+      --sh-hover:0 8px 28px rgba(184,92,42,.15),0 2px 8px rgba(30,20,10,.08);
+    }
+    html[data-theme="dark"]{
+      --bg:#171310;--surface:#201B18;--surface-2:#2C2520;--border:#3D332C;
+      --accent:#D07848;--accent-lt:#281A10;--accent-dk:#E89870;
+      --text:#EDE3D8;--muted:#8A7A6E;
+      --green:#40A068;--green-lt:#102018;
+      --amber:#D4A030;--amber-lt:#261C08;
+      --slate:#5A6A7A;--slate-lt:#1A2030;
+      --accent-rgb: 208,120,72; /* RGB para uso em rgba() */
+      --sh:0 1px 3px rgba(0,0,0,.4),0 4px 16px rgba(0,0,0,.4);
+      --sh-hover:0 8px 28px rgba(208,120,72,.2),0 2px 8px rgba(0,0,0,.4);
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{background:var(--bg);font-family:var(--sans);min-height:100vh;color:var(--text);-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-rendering:optimizeLegibility}
+
+    /* NAV */
+    .topnav{position:sticky;top:0;z-index:200;background:rgba(245,240,234,.88);backdrop-filter:blur(20px) saturate(1.8);-webkit-backdrop-filter:blur(20px) saturate(1.8);border-bottom:1px solid var(--border);height:62px;padding:0 24px;display:flex;align-items:center;justify-content:space-between;transition:background .3s}
+    html[data-theme="dark"] .topnav{background:rgba(23,19,16,.9)}
+    .nav-brand{display:flex;align-items:center;gap:10px;text-decoration:none}
+    .nav-logo{width:32px;height:32px;border-radius:8px;flex-shrink:0;background:var(--accent);display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(184,92,42,.35)}
+    .nav-logo svg{width:15px;height:15px;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+    .nav-title{font-size:14px;font-weight:700;color:var(--text);letter-spacing:-.01em}
+    .nav-tag{font-family:var(--mono);font-size:10px;background:var(--accent-lt);color:var(--accent);padding:2px 7px;border-radius:5px;border:1px solid var(--border)}
+    .nav-links{display:flex;gap:2px;align-items:center}
+    .nav-link{text-decoration:none;background:none;border:none;cursor:pointer;font-family:var(--sans);font-size:13px;font-weight:500;color:var(--muted);padding:6px 11px;border-radius:8px;transition:background .15s,color .15s}
+    .nav-link:hover{background:var(--surface-2);color:var(--text)}
+    .nav-link.active{background:var(--accent-lt);color:var(--accent);font-weight:600}
+
+    /* BOTTOM NAV — mobile only */
+    .bottom-nav{display:none;position:fixed;bottom:0;left:0;right:0;z-index:150;background:var(--surface);border-top:1px solid var(--border);padding:6px 0 calc(6px + env(safe-area-inset-bottom));transition:background .3s}
+    .bn-items{display:flex;justify-content:space-around;align-items:center}
+    .bn-link{display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none;color:var(--muted);font-size:10px;font-weight:600;padding:4px 8px;border-radius:8px;transition:color .15s;flex:1;min-width:0;background:none;border:none;cursor:pointer;font-family:var(--sans)}
+    .bn-link svg{width:20px;height:20px;flex-shrink:0;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+    .bn-link.active{color:var(--accent)}
+
+    /* MAIN */
+    .dashboard{max-width:900px;margin:0 auto;padding:28px 20px 72px}
+
+    /* CLOCK & EVENT STRIP */
+    .top-strip{display:grid;grid-template-columns:1fr;gap:14px;margin-bottom:16px;align-items:stretch}
+    .clock-block{
+      background: linear-gradient(135deg, var(--accent), var(--accent-dk)); /* Gradiente mais dinâmico */
+      color:#fff;
+      border-radius:var(--radius);
+      padding:22px 24px;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      min-width:164px;
+      box-shadow:0 4px 20px rgba(var(--accent-rgb),.3); /* Sombra inicial */
+      position:relative;
+      overflow:hidden;
+      animation: clock-glow 4s ease-in-out infinite alternate; /* Animação de brilho */
+    }
+    .clock-block::after{content:'';position:absolute;bottom:-30px;right:-30px;width:110px;height:110px;border:30px solid rgba(255,255,255,.07);border-radius:50%}
+    .clock-time{font-family:var(--mono);font-size:42px;font-weight:700;letter-spacing:-.04em;line-height:1;text-shadow:0 2px 4px rgba(0,0,0,0.2)} /* Hora maior e mais negrito com sombra */
+    .clock-weekday{font-size:13px;font-weight:700;opacity:1;margin-top:8px;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,0.85)} /* Dia da semana mais visível */
+    .clock-date{font-family:var(--mono);font-size:11px;opacity:.7;margin-top:3px} /* Data um pouco mais visível */
+    html[data-theme="dark"] .clock-block{background:linear-gradient(135deg,#3A1C0C 0%,#5A3020 100%)} /* Gradiente invertido para tema escuro */
+
+    .event-block{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px 22px;box-shadow:var(--sh);display:none;align-items:center;gap:16px}
+    .event-block.visible{display:flex}
+    .event-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;background:var(--amber);box-shadow:0 0 0 4px var(--amber-lt);animation:pulse-ring 2s ease-in-out infinite}
+    .event-text{flex:1;min-width:0}
+    .event-eyebrow{font-family:var(--mono);font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.12em;color:var(--amber);margin-bottom:4px}
+    .event-name{font-size:17px;font-weight:700;color:var(--text);line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .event-sub{font-family:var(--mono);font-size:11px;color:var(--muted);margin-top:4px}
+
+    /* SCHEDULE */
+    .schedule-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--sh);margin-bottom:20px;overflow:hidden}
+    .schedule-header{padding:16px 22px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+    .schedule-header-left{display:flex;align-items:center;gap:9px}
+    .schedule-eyebrow{font-family:var(--mono);font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.12em;color:var(--muted)}
+    .schedule-header-right{display:flex;align-items:center;gap:12px}
+    .schedule-today-badge{font-family:var(--mono);font-size:10px;font-weight:500;background:var(--accent-lt);color:var(--accent);border:1px solid var(--border);padding:2px 9px;border-radius:20px}
+    .btn-export{background:var(--surface-2);border:1px solid var(--border);color:var(--muted);padding:4px 8px;border-radius:6px;cursor:pointer;display:inline-flex;align-items:center;gap:5px;font-family:var(--mono);font-size:10px;font-weight:600;transition:all .2s}
+    .btn-export:hover{background:var(--accent);color:#fff;border-color:var(--accent)}
+    .btn-export svg{width:12px;height:12px;stroke:currentColor}
+    .schedule-count{font-family:var(--mono);font-size:11px;color:var(--muted)}
+    .sched-row{display:grid;grid-template-columns:148px 1fr auto;align-items:center;gap:16px;padding:15px 22px;border-bottom:1px solid var(--border);position:relative;transition:background .15s}
+    .sched-row:last-child{border-bottom:none}
+    .sched-row.live{background:linear-gradient(90deg,rgba(40,120,80,.06) 0%,transparent 55%)}
+    .sched-row.live::before,.sched-row.next-up::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;border-radius:0 2px 2px 0}
+    .sched-row.live::before{background:var(--green)}
+    .sched-row.next-up::before{background:var(--accent)}
+    .sched-row.done{opacity:.42}
+    .sched-time{font-family:var(--mono);font-size:12px;font-weight:500;color:var(--muted);white-space:nowrap}
+    .sched-row.live .sched-time{color:var(--green);font-weight:600}
+    .sched-row.next-up .sched-time{color:var(--accent);font-weight:600}
+    .sched-name{font-size:16px;font-weight:700;color:var(--text);letter-spacing:-.01em}
+    .sched-row.done .sched-name{font-weight:500}
+    .sched-pill{font-family:var(--mono);font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;padding:4px 10px;border-radius:20px;white-space:nowrap;border:1px solid transparent}
+    .pill-live{background:var(--green-lt);color:var(--green);border-color:rgba(40,120,80,.2)}
+    .pill-done{background:var(--slate-lt);color:var(--slate);border-color:#E2E8F0}
+    html[data-theme="dark"] .pill-done{background:var(--surface-2);border-color:var(--border)}
+    .pill-next{background:var(--accent-lt);color:var(--accent);border-color:var(--border)}
+    .pill-later{background:transparent;color:transparent;border-color:transparent}
+    .schedule-empty{padding:40px 22px;text-align:center}
+    .schedule-empty-icon{font-size:32px;margin-bottom:10px}
+    .schedule-empty-text{font-size:15px;font-weight:700;color:var(--text);margin-bottom:4px}
+    .schedule-empty-sub{font-size:13px;color:var(--muted)}
+
+    /* SECTION LABEL */
+    .section-label{font-family:var(--mono);font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);margin-bottom:12px}
+
+    /* CARDS GRID */
+    /* CARDS GRID - BENTO STYLE */
+    .cards-grid{display:grid;grid-template-columns:repeat(2, 1fr);gap:16px}
+    .feature-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--sh);text-decoration:none;color:inherit;padding:24px;display:flex;flex-direction:column;gap:18px;cursor:pointer;transition:all .3s cubic-bezier(.23,1,0.32,1)}
+    .feature-card:hover{transform:translateY(-6px);box-shadow:var(--sh-hover);border-color:var(--accent)}
+    
+    .feature-card.card-main{grid-column:span 2;flex-direction:row;align-items:center;padding:28px}
+    
+    .card-icon{width:52px;height:52px;border-radius:13px;flex-shrink:0;background:var(--accent-lt);display:flex;align-items:center;justify-content:center;border:1px solid rgba(var(--accent-rgb), 0.1)}
+    .card-icon svg{width:24px;height:24px;fill:none;stroke:var(--accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+    
+    /* Cores específicas Bento */
+    .card-bus .card-icon{background:var(--green-lt);border-color:rgba(40,120,80,0.1)}
+    .card-bus .card-icon svg{stroke:var(--green)}
+    .card-profs .card-icon{background:var(--amber-lt);border-color:rgba(198,140,26,0.1)}
+    .card-profs .card-icon svg{stroke:var(--amber)}
+
+    .card-body{flex:1;min-width:0}
+    .card-title{font-size:17px;font-weight:700;color:var(--text);margin-bottom:6px;letter-spacing:-.02em}
+    .card-desc{font-size:13px;color:var(--muted);line-height:1.5}
+    .card-cta{margin-top:14px;font-family:var(--mono);font-size:10px;font-weight:700;color:var(--accent);letter-spacing:.06em;text-transform:uppercase;display:inline-flex;align-items:center;gap:6px}
+    .card-cta svg{width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;transition:transform .2s}
+    .feature-card:hover .card-cta svg{transform:translateX(5px)}
+    
+    .card-bus .card-cta{color:var(--green)}
+    .card-profs .card-cta{color:var(--amber)}
+
+    .section-label{font-family:var(--mono);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.15em;color:var(--muted);margin:32px 0 16px;display:flex;align-items:center;gap:12px}
+    .section-label::after{content:'';flex:1;height:1px;background:var(--border);opacity:0.6}
+
+    /* ANIMATIONS */
+    @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+    @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+    @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.75)}}
+    @keyframes clock-glow { /* Animação de brilho para o relógio */
+      0% { box-shadow: 0 4px 20px rgba(var(--accent-rgb),.3); }
+      100% { box-shadow: 0 6px 28px rgba(var(--accent-rgb),.45), 0 2px 10px rgba(var(--accent-rgb),.2); }
+    }
+    @keyframes pulse-ring{0%{box-shadow:0 0 0 0 rgba(198,140,26,.4)}70%{box-shadow:0 0 0 8px rgba(198,140,26,0)}100%{box-shadow:0 0 0 0 rgba(198,140,26,0)}}
+    .top-strip{animation:fadeUp .45s cubic-bezier(.22,1,.36,1) both}
+    .schedule-card{animation:fadeUp .45s .08s cubic-bezier(.22,1,.36,1) both}
+    .section-label{animation:fadeUp .45s .14s cubic-bezier(.22,1,.36,1) both}
+    .cards-grid{animation:fadeUp .45s .18s cubic-bezier(.22,1,.36,1) both}
+    .live-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--green);margin-right:5px;vertical-align:middle;animation:pulse 1.8s ease-in-out infinite}
+
+    /* FOOTER */
+    footer{text-align:center;padding:28px;font-family:var(--mono);font-size:11px;color:var(--muted)}
+
+    /* RESPONSIVE */
+    @media(max-width:680px){
+      .top-strip{grid-template-columns:1fr}
+      .clock-block{flex-direction:row;align-items:center;gap:16px;min-width:unset;padding:16px 20px}
+      .clock-time{font-size:32px}
+      .cards-grid{grid-template-columns:1fr;gap:12px}
+      .feature-card.card-main{flex-direction:column;align-items:flex-start;padding:22px}
+      .sched-row{grid-template-columns:116px 1fr auto;gap:10px;padding:13px 16px}
+      .schedule-header{padding:14px 16px 12px}
+      .dashboard{padding:16px 14px 20px}
+    }
+    @media(max-width:400px){.sched-row{grid-template-columns:1fr auto}.sched-time{display:none}}
+    @media(max-width:640px){.nav-links{display:none}.bottom-nav{display:block}}
+  </style>
+  <script>if(localStorage.getItem('theme')==='dark')document.documentElement.setAttribute('data-theme','dark');</script>
+</head>
+<body>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <script src="theme.js" defer></script>
+
+  <nav class="topnav">
+    <a href="index.html" class="nav-brand">
+      <div class="nav-logo"><svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></div>
+      <span class="nav-title">Portal</span>
+      <span class="nav-tag">1INFO-2</span>
+    </a>
+    <nav class="nav-links">
+      <a href="aulas.html"    class="nav-link">Grade</a>
+      <a href="onibus.html"   class="nav-link">Ônibus</a>
+      <a href="horarios.html" class="nav-link">Professores</a>
+    </nav>
+  </nav>
+
+  <nav class="bottom-nav">
+    <div class="bn-items">
+      <a href="index.html" class="bn-link active">
+        <svg viewBox="0 0 24 24"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/><polyline points="9 21 9 12 15 12 15 21"/></svg>
+        <span>Portal</span>
+      </a>
+      <a href="aulas.html" class="bn-link">
+        <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        <span>Grade</span>
+      </a>
+      <a href="onibus.html" class="bn-link">
+        <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/><path d="M7 8h10M7 11h5"/></svg>
+        <span>Ônibus</span>
+      </a>
+      <a href="horarios.html" class="bn-link">
+        <svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-8 0v2"/><circle cx="12" cy="7" r="4"/></svg>
+        <span>Professores</span>
+      </a>
+    </div>
+  </nav>
+
+  <div class="dashboard">
+    <div class="top-strip">
+      <div class="clock-block">
+        <div class="clock-time"    id="clock-time">--:--</div>
+        <div class="clock-weekday" id="clock-weekday">---</div>
+        <div class="clock-date"    id="clock-date">---</div>
+      </div>
+    </div>
+
+    <div class="schedule-card">
+      <div class="schedule-header">
+        <div class="schedule-header-left">
+          <span class="schedule-eyebrow">Aulas de hoje</span>
+          <span class="schedule-today-badge" id="schedule-day-badge">---</span>
+        </div>
+        <div class="schedule-header-right">
+          <span class="schedule-count" id="schedule-count"></span>
+
+
+        </div>
+
+      </div>
+      <div id="today-schedule"></div>
+    </div>
+
+    <div class="section-label">Acesso Rápido</div>
+    <div class="cards-grid">
+      <a href="aulas.html" class="feature-card card-main">
+        <div class="card-icon"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
+        <div class="card-body">
+          <div class="card-title">Grade de Aulas</div>
+          <div class="card-desc">Horário semanal completo com destaque automático para o dia e horário atual.</div>
+          <div class="card-cta">Ver grade <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
+        </div>
+      </a>
+      <a href="onibus.html" class="feature-card card-bus">
+        <div class="card-icon"><svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/><path d="M7 8h10M7 11h5"/></svg></div>
+        <div class="card-body">
+          <div class="card-title">Horários de Ônibus</div>
+          <div class="card-desc">Terminal ↔ Shopping — próximas saídas (Segunda a Sexta).</div>
+          <div class="card-cta">Ver horários <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
+        </div>
+      </a>
+      <a href="horarios.html" class="feature-card card-profs">
+        <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-8 0v2"/><circle cx="12" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+        <div class="card-body">
+          <div class="card-title">Atendimento de Professores</div>
+          <div class="card-desc">Horários e e-mails de todos os professores disponíveis para dúvidas.</div>
+          <div class="card-cta">Ver professores <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
+        </div>
+      </a>
+    </div>
+  </div>
+
+  <footer>// Portal 1INFO-2</footer>
+
+
+
+  <script src="eventos.js"></script>
+  <script>
+    const SCHEDULE={
+      1:[{start:'12:35',end:'14:15',label:'Artes'},{start:'14:25',end:'16:05',label:'Geografia'},{start:'16:20',end:'18:00',label:'Matemática'}],
+      2:[{start:'12:35',end:'14:15',label:'Intro. Computação'},{start:'14:25',end:'16:05',label:'Inglês'},{start:'16:20',end:'18:00',label:'Física'}],
+      3:[{start:'14:25',end:'16:05',label:'Ed. Física'},{start:'16:20',end:'18:00',label:'Filosofia'}],
+      4:[{start:'12:35',end:'14:15',label:'Língua Portuguesa'},{start:'14:25',end:'16:05',label:'Interfaces Web'}],
+      5:[{start:'12:35',end:'16:05',label:'Programação'},{start:'16:20',end:'18:00',label:'Matemática'}],
+    };
+    const DAYS_PT=['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'];
+    const MONTHS_PT=['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
+    function toMins(t){const[h,m]=t.split(':').map(Number);return h*60+m;}
+
+    function tickClock(){
+      const n=new Date();
+      document.getElementById('clock-time').textContent=String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0');
+      document.getElementById('clock-weekday').textContent=DAYS_PT[n.getDay()].toUpperCase();
+      document.getElementById('clock-date').textContent=String(n.getDate()).padStart(2,'0')+'/'+String(n.getMonth()+1).padStart(2,'0')+'/'+n.getFullYear();
+    }
+
+    function renderSchedule(){
+      const n=new Date(),dow=n.getDay(),mins=n.getHours()*60+n.getMinutes();
+      const todayKey = n.getFullYear()+'-'+String(n.getMonth()+1).padStart(2,'0')+'-'+String(n.getDate()).padStart(2,'0');
+      
+      // Check for School Saturday
+      let effectiveDow = dow;
+      if (dow === 6 && window.sabadosLetivos && window.sabadosLetivos[todayKey]) {
+        effectiveDow = window.sabadosLetivos[todayKey];
+      }
+
+      const today=SCHEDULE[effectiveDow]||[];
+      const list=document.getElementById('today-schedule');
+      document.getElementById('schedule-day-badge').textContent=effectiveDow !== dow ? DAYS_PT[effectiveDow] + ' (Sáb. Letivo)' : DAYS_PT[dow];
+      if(!today.length){list.innerHTML='<div class="schedule-empty"><div class="schedule-empty-icon">🎉</div><div class="schedule-empty-text">Sem aulas hoje</div><div class="schedule-empty-sub">Aproveite o descanso!</div></div>';document.getElementById('schedule-count').textContent='';return;}
+      const remaining=today.filter(c=>toMins(c.end)>mins).length;
+      document.getElementById('schedule-count').textContent=remaining>0?remaining+' restante'+(remaining>1?'s':''):'Todas concluídas';
+      let markedNext=false;
+      list.innerHTML=today.map(c=>{
+        const startM=toMins(c.start),endM=toMins(c.end);
+        let rowClass='',pillClass='',pillText='';
+        if(mins>=startM&&mins<endM){rowClass='live';pillClass='pill-live';pillText='<span class="live-dot"></span>Em aula';}
+        else if(mins>=endM){rowClass='done';pillClass='pill-done';pillText='✓ Concluída';}
+        else if(!markedNext){rowClass='upcoming next-up';pillClass='pill-next';pillText='A seguir';markedNext=true;}
+        else{rowClass='upcoming';pillClass='pill-later';pillText='';}
+        return`<div class="sched-row ${rowClass}"><div class="sched-time">${c.start} — ${c.end}</div><div class="sched-name">${c.label}</div><span class="sched-pill ${pillClass}">${pillText}</span></div>`;
+      }).join('');
+    }
+
+    function updateBusCard() {
+      const n = new Date();
+      const dow = n.getDay();
+      const isWeekend = (dow === 0 || dow === 6);
+      const busCard = document.querySelector('.feature-card[href="onibus.html"]');
+      
+      if (busCard) {
+        const desc = busCard.querySelector('.card-desc');
+        if (isWeekend) {
+          desc.innerHTML = '<span style="color:var(--accent); font-weight:800; text-transform:uppercase;">🚫 Indisponível hoje</span><br>A linha opera apenas em dias úteis (Seg a Sex).';
+          busCard.style.opacity = '0.8';
+        } else {
+          desc.textContent = 'Terminal ↔ Shopping — próximas saídas (Segunda a Sexta).';
+          busCard.style.opacity = '1';
+        }
+      }
+    }
+
+    tickClock(); renderSchedule(); updateBusCard();
+    setInterval(tickClock, 1000);
+    setInterval(() => { renderSchedule(); updateBusCard(); }, 15000);
+
+  </script>
+</body>
+</html>

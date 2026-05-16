@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Grade de Aulas — Portal 1INFO-2</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@400;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <style>
+    :root{
+      --bg:#F5F0EA;--surface:#FDFBF8;--surface-2:#ECE7DC;--border:#D9D0C3;
+      --accent:#B85C2A;--accent-lt:#F4E2D2;--accent-dk:#8C401C;
+      --text:#1E1711;--muted:#7C6E62;
+      --green:#2D7A50;--green-lt:#D4EDE0;
+      --radius:14px;
+      --mono:'JetBrains Mono',monospace;--sans:'Inter',sans-serif;--display:'Playfair Display',serif;
+      --sh:0 1px 3px rgba(30,20,10,.06),0 4px 16px rgba(30,20,10,.06);
+      --sh-hover:0 8px 28px rgba(184,92,42,.15),0 2px 8px rgba(30,20,10,.08);
+    }
+    html[data-theme="dark"]{
+      --bg:#171310;--surface:#201B18;--surface-2:#2C2520;--border:#3D332C;
+      --accent:#D07848;--accent-lt:#281A10;--accent-dk:#E89870;
+      --text:#EDE3D8;--muted:#8A7A6E;--green:#40A068;--green-lt:#102018;
+      --sh:0 1px 3px rgba(0,0,0,.4),0 4px 16px rgba(0,0,0,.4);
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{background:var(--bg);font-family:var(--sans);min-height:100vh;color:var(--text);-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-rendering:optimizeLegibility}
+
+    .topnav{position:sticky;top:0;z-index:200;background:rgba(245,240,234,.88);backdrop-filter:blur(20px) saturate(1.8);-webkit-backdrop-filter:blur(20px) saturate(1.8);border-bottom:1px solid var(--border);height:62px;padding:0 24px;display:flex;align-items:center;justify-content:space-between;transition:background .3s}
+    html[data-theme="dark"] .topnav{background:rgba(23,19,16,.9)}
+    .nav-brand{display:flex;align-items:center;gap:10px;text-decoration:none}
+    .nav-logo{width:32px;height:32px;border-radius:8px;flex-shrink:0;background:var(--accent);display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(184,92,42,.35)}
+    .nav-logo svg{width:15px;height:15px;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+    .nav-title{font-size:14px;font-weight:700;color:var(--text);letter-spacing:-.01em}
+    .nav-tag{font-family:var(--mono);font-size:10px;background:var(--accent-lt);color:var(--accent);padding:2px 7px;border-radius:5px;border:1px solid var(--border)}
+    .nav-links{display:flex;gap:2px;align-items:center}
+    .nav-link{text-decoration:none;background:none;border:none;cursor:pointer;font-family:var(--sans);font-size:13px;font-weight:500;color:var(--muted);padding:6px 11px;border-radius:8px;transition:background .15s,color .15s}
+    .nav-link:hover{background:var(--surface-2);color:var(--text)}
+    .nav-link.active{background:var(--accent-lt);color:var(--accent);font-weight:600}
+
+    .bottom-nav{display:none;position:fixed;bottom:0;left:0;right:0;z-index:150;background:var(--surface);border-top:1px solid var(--border);padding:6px 0 calc(6px + env(safe-area-inset-bottom));transition:background .3s}
+    .bn-items{display:flex;justify-content:space-around;align-items:center}
+    .bn-link{display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none;color:var(--muted);font-size:10px;font-weight:600;padding:4px 8px;border-radius:8px;transition:color .15s;flex:1;min-width:0;background:none;border:none;cursor:pointer;font-family:var(--sans)}
+    .bn-link svg{width:20px;height:20px;flex-shrink:0;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+    .bn-link.active{color:var(--accent)}
+
+    main{max-width:980px;margin:0 auto;padding:24px 20px 80px}
+    .legend{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:18px}
+    .legend-chip{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:500;padding:4px 10px;border-radius:20px;border:1px solid transparent}
+    .legend-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+    .today-banner{background:var(--accent-lt);border:1px solid var(--border);border-radius:var(--radius);padding:14px 18px;margin-bottom:16px;display:none;align-items:center;gap:10px;flex-wrap:wrap}
+    .today-banner.visible{display:flex}
+    .today-banner-label{font-family:var(--mono);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);flex-shrink:0}
+    .today-classes{display:flex;gap:6px;flex-wrap:wrap}
+    .today-chip{font-size:12px;font-weight:600;padding:3px 10px;border-radius:20px;background:var(--surface);border:1px solid var(--border);color:var(--text)}
+    .today-chip.live{background:var(--accent);border-color:var(--accent);color:#fff}
+    .schedule-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--sh);overflow:hidden}
+    .card-toolbar{padding:14px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:flex-end;gap:8px}
+    .btn{text-decoration:none;border:1px solid var(--border);padding:7px 14px;border-radius:9px;font-family:var(--sans);font-size:13px;font-weight:600;color:var(--muted);cursor:pointer;display:inline-flex;align-items:center;gap:5px;background:var(--surface-2);transition:background .15s,color .15s,border-color .15s}
+    .btn:hover{background:var(--surface);color:var(--text);border-color:var(--accent)}
+    .btn-primary{background:var(--accent);border-color:var(--accent);color:#fff}
+    .btn-primary:hover{background:var(--accent-dk);border-color:var(--accent-dk);color:#fff}
+    .table-wrap{overflow-x:auto}
+    table{width:100%;border-collapse:collapse}
+    th{padding:13px 14px;font-family:var(--mono);font-size:10px;font-weight:700;text-align:left;white-space:nowrap;border-bottom:2px solid var(--border);background:var(--accent-lt);color:var(--accent);text-transform:uppercase;letter-spacing:.08em}
+    th.today-col{background:var(--accent);color:#fff}
+    td{padding:10px 14px;border-bottom:1px solid var(--border);font-size:13px;vertical-align:top}
+    .time-cell{font-family:var(--mono);font-size:11px;font-weight:600;color:var(--muted);white-space:nowrap;background:var(--surface-2) !important;width:110px}
+    .time-cell.live-row{background:var(--accent-lt) !important;color:var(--accent-dk)}
+    .live-badge{display:inline-flex;align-items:center;gap:3px;font-family:var(--mono);font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--green);margin-top:4px}
+    .live-dot{width:5px;height:5px;border-radius:50%;background:var(--green);animation:blink 1.5s ease-in-out infinite}
+    td.today-col{background:rgba(184,92,42,.04)}
+    tbody tr:hover td{background:var(--surface-2)}
+    tbody tr:hover td.today-col{background:rgba(184,92,42,.07)}
+    .subj-pill{display:inline-flex;flex-direction:column;padding:4px 9px;border-radius:7px;gap:1px}
+    .subj-name{font-size:12px;font-weight:600;line-height:1.25}
+    .subj-code{font-family:var(--mono);font-size:10px;opacity:.6;font-weight:400}
+    .s-art{background:#FDE8D8;color:#7A3D04}.s-incp{background:#DBEAFE;color:#1E3A8A}
+    .s-lpr{background:#D1FAE5;color:#065F46}.s-prog{background:#EDE9FE;color:#4C1D95}
+    .s-geo{background:#CCFBF1;color:#134E4A}.s-ing{background:#FEF3C7;color:#92400E}
+    .s-efi{background:#FFE4E6;color:#881337}.s-iwb{background:#E0E7FF;color:#312E81}
+    .s-mat{background:#FCE7F3;color:#831843}.s-fis{background:#E0F2FE;color:#0C4A6E}
+    .s-fil{background:#FEF9C3;color:#713F12}
+    html[data-theme="dark"] .s-art{background:#3D200A;color:#F97316}
+    html[data-theme="dark"] .s-incp{background:#0D1A40;color:#60A5FA}
+    html[data-theme="dark"] .s-lpr{background:#04201A;color:#34D399}
+    html[data-theme="dark"] .s-prog{background:#1E0D40;color:#C084FC}
+    html[data-theme="dark"] .s-geo{background:#042018;color:#2DD4BF}
+    html[data-theme="dark"] .s-ing{background:#261C04;color:#FCD34D}
+    html[data-theme="dark"] .s-efi{background:#2A0A10;color:#FDA4AF}
+    html[data-theme="dark"] .s-iwb{background:#0D1040;color:#A5B4FC}
+    html[data-theme="dark"] .s-mat{background:#2A0418;color:#F472B6}
+    html[data-theme="dark"] .s-fis{background:#021828;color:#38BDF8}
+    html[data-theme="dark"] .s-fil{background:#221A04;color:#FDE047}
+    html[data-theme="dark"] th{background:var(--accent-lt);color:var(--accent-dk)}
+    html[data-theme="dark"] th.today-col{background:var(--accent);color:#fff}
+    html[data-theme="dark"] td.today-col{background:rgba(208,120,72,.06)}
+    html[data-theme="dark"] tbody tr:hover td{background:var(--surface-2)}
+
+    footer{text-align:center;padding:28px;font-family:var(--mono);font-size:11px;color:var(--muted)}
+
+    @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+    @keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
+    .today-banner{animation:fadeUp .4s cubic-bezier(.22,1,.36,1) both}
+    .legend{animation:fadeUp .4s .05s cubic-bezier(.22,1,.36,1) both}
+    .schedule-card{animation:fadeUp .4s .1s cubic-bezier(.22,1,.36,1) both}
+
+    @media(max-width:640px){.nav-links{display:none}.bottom-nav{display:block}}
+    @media(max-width:720px){main{padding:16px 12px 80px}}
+  </style>
+  <script>if(localStorage.getItem('theme')==='dark')document.documentElement.setAttribute('data-theme','dark');</script>
+</head>
+<body>
+  <script src="theme.js" defer></script>
+  <nav class="topnav">
+    <a href="index.html" class="nav-brand">
+      <div class="nav-logo"><svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></div>
+      <span class="nav-title">Portal</span>
+      <span class="nav-tag">1INFO-2</span>
+    </a>
+    <nav class="nav-links">
+      <a href="aulas.html"    class="nav-link active">Grade</a>
+      <a href="onibus.html"   class="nav-link">Ônibus</a>
+      <a href="horarios.html" class="nav-link">Professores</a>
+    </nav>
+  </nav>
+
+  <nav class="bottom-nav">
+    <div class="bn-items">
+      <a href="index.html" class="bn-link"><svg viewBox="0 0 24 24"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/><polyline points="9 21 9 12 15 12 15 21"/></svg><span>Portal</span></a>
+      <a href="aulas.html" class="bn-link active"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span>Grade</span></a>
+      <a href="onibus.html" class="bn-link"><svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/><path d="M7 8h10M7 11h5"/></svg><span>Ônibus</span></a>
+      <a href="horarios.html" class="bn-link"><svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-8 0v2"/><circle cx="12" cy="7" r="4"/></svg><span>Professores</span></a>
+    </div>
+  </nav>
+
+  <main>
+    <div class="today-banner" id="today-banner">
+      <span class="today-banner-label" id="banner-label">Hoje</span>
+      <div class="today-classes" id="banner-classes"></div>
+    </div>
+    <div id="legend" class="legend"></div>
+    <div class="schedule-card">
+      <div class="card-toolbar">
+        <button class="btn btn-primary" id="export-pdf">⬇ Exportar PDF</button>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Horário</th>
+              <th data-dow="1">Segunda</th>
+              <th data-dow="2">Terça</th>
+              <th data-dow="3">Quarta</th>
+              <th data-dow="4">Quinta</th>
+              <th data-dow="5">Sexta</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr data-start="12:35" data-end="13:25">
+              <td class="time-cell">12:35 – 13:25</td>
+              <td><span class="subj-pill s-art"  data-code="ARQART1"><span class="subj-name">Artes</span><span class="subj-code">ARQART1</span></span></td>
+              <td><span class="subj-pill s-incp" data-code="ARQINCP"><span class="subj-name">Intro. Computação</span><span class="subj-code">ARQINCP</span></span></td>
+              <td></td>
+              <td><span class="subj-pill s-lpr"  data-code="ARQLPR1"><span class="subj-name">Língua Portuguesa</span><span class="subj-code">ARQLPR1</span></span></td>
+              <td><span class="subj-pill s-prog" data-code="ARQPROG"><span class="subj-name">Programação</span><span class="subj-code">ARQPROG</span></span></td>
+            </tr>
+            <tr data-start="13:25" data-end="14:15">
+              <td class="time-cell">13:25 – 14:15</td>
+              <td><span class="subj-pill s-art"  data-code="ARQART1"><span class="subj-name">Artes</span><span class="subj-code">ARQART1</span></span></td>
+              <td><span class="subj-pill s-incp" data-code="ARQINCP"><span class="subj-name">Intro. Computação</span><span class="subj-code">ARQINCP</span></span></td>
+              <td></td>
+              <td><span class="subj-pill s-lpr"  data-code="ARQLPR1"><span class="subj-name">Língua Portuguesa</span><span class="subj-code">ARQLPR1</span></span></td>
+              <td><span class="subj-pill s-prog" data-code="ARQPROG"><span class="subj-name">Programação</span><span class="subj-code">ARQPROG</span></span></td>
+            </tr>
+            <tr data-start="14:25" data-end="15:15">
+              <td class="time-cell">14:25 – 15:15</td>
+              <td><span class="subj-pill s-geo"  data-code="ARQGEO1"><span class="subj-name">Geografia</span><span class="subj-code">ARQGEO1</span></span></td>
+              <td><span class="subj-pill s-ing"  data-code="ARQING1"><span class="subj-name">Inglês</span><span class="subj-code">ARQING1</span></span></td>
+              <td><span class="subj-pill s-efi"  data-code="ARQEFI1"><span class="subj-name">Ed. Física</span><span class="subj-code">ARQEFI1</span></span></td>
+              <td><span class="subj-pill s-iwb"  data-code="ARQIWB1"><span class="subj-name">Interfaces Web</span><span class="subj-code">ARQIWB1</span></span></td>
+              <td><span class="subj-pill s-prog" data-code="ARQPROG"><span class="subj-name">Programação</span><span class="subj-code">ARQPROG</span></span></td>
+            </tr>
+            <tr data-start="15:15" data-end="16:05">
+              <td class="time-cell">15:15 – 16:05</td>
+              <td><span class="subj-pill s-geo"  data-code="ARQGEO1"><span class="subj-name">Geografia</span><span class="subj-code">ARQGEO1</span></span></td>
+              <td><span class="subj-pill s-ing"  data-code="ARQING1"><span class="subj-name">Inglês</span><span class="subj-code">ARQING1</span></span></td>
+              <td><span class="subj-pill s-efi"  data-code="ARQEFI1"><span class="subj-name">Ed. Física</span><span class="subj-code">ARQEFI1</span></span></td>
+              <td><span class="subj-pill s-iwb"  data-code="ARQIWB1"><span class="subj-name">Interfaces Web</span><span class="subj-code">ARQIWB1</span></span></td>
+              <td><span class="subj-pill s-prog" data-code="ARQPROG"><span class="subj-name">Programação</span><span class="subj-code">ARQPROG</span></span></td>
+            </tr>
+            <tr data-start="16:20" data-end="17:10">
+              <td class="time-cell">16:20 – 17:10</td>
+              <td><span class="subj-pill s-mat"  data-code="ARQMAT1"><span class="subj-name">Matemática</span><span class="subj-code">ARQMAT1</span></span></td>
+              <td><span class="subj-pill s-fis"  data-code="ARQFIS1"><span class="subj-name">Física</span><span class="subj-code">ARQFIS1</span></span></td>
+              <td><span class="subj-pill s-fil"  data-code="ARQFIL1"><span class="subj-name">Filosofia</span><span class="subj-code">ARQFIL1</span></span></td>
+              <td></td>
+              <td><span class="subj-pill s-mat"  data-code="ARQMAT1"><span class="subj-name">Matemática</span><span class="subj-code">ARQMAT1</span></span></td>
+            </tr>
+            <tr data-start="17:10" data-end="18:00">
+              <td class="time-cell">17:10 – 18:00</td>
+              <td><span class="subj-pill s-mat"  data-code="ARQMAT1"><span class="subj-name">Matemática</span><span class="subj-code">ARQMAT1</span></span></td>
+              <td><span class="subj-pill s-fis"  data-code="ARQFIS1"><span class="subj-name">Física</span><span class="subj-code">ARQFIS1</span></span></td>
+              <td><span class="subj-pill s-fil"  data-code="ARQFIL1"><span class="subj-name">Filosofia</span><span class="subj-code">ARQFIL1</span></span></td>
+              <td></td>
+              <td><span class="subj-pill s-mat"  data-code="ARQMAT1"><span class="subj-name">Matemática</span><span class="subj-code">ARQMAT1</span></span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+  <footer>// Portal 1INFO-2</footer>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <script>
+    const SUBJECTS={'ARQART1':{name:'Artes',cls:'s-art',dot:'#F97316'},'ARQINCP':{name:'Intro. Computação',cls:'s-incp',dot:'#3B82F6'},'ARQLPR1':{name:'Língua Portuguesa',cls:'s-lpr',dot:'#10B981'},'ARQPROG':{name:'Programação',cls:'s-prog',dot:'#8B5CF6'},'ARQGEO1':{name:'Geografia',cls:'s-geo',dot:'#14B8A6'},'ARQING1':{name:'Inglês',cls:'s-ing',dot:'#F59E0B'},'ARQEFI1':{name:'Ed. Física',cls:'s-efi',dot:'#F43F5E'},'ARQIWB1':{name:'Interfaces Web',cls:'s-iwb',dot:'#6366F1'},'ARQMAT1':{name:'Matemática',cls:'s-mat',dot:'#EC4899'},'ARQFIS1':{name:'Física',cls:'s-fis',dot:'#0EA5E9'},'ARQFIL1':{name:'Filosofia',cls:'s-fil',dot:'#84CC16'}};
+    const SCHEDULE={1:[{start:'12:35',end:'14:15',code:'ARQART1'},{start:'14:25',end:'16:05',code:'ARQGEO1'},{start:'16:20',end:'18:00',code:'ARQMAT1'}],2:[{start:'12:35',end:'14:15',code:'ARQINCP'},{start:'14:25',end:'16:05',code:'ARQING1'},{start:'16:20',end:'18:00',code:'ARQFIS1'}],3:[{start:'14:25',end:'16:05',code:'ARQEFI1'},{start:'16:20',end:'18:00',code:'ARQFIL1'}],4:[{start:'12:35',end:'14:15',code:'ARQLPR1'},{start:'14:25',end:'16:05',code:'ARQIWB1'}],5:[{start:'12:35',end:'16:05',code:'ARQPROG'},{start:'16:20',end:'18:00',code:'ARQMAT1'}]};
+    const DAYS_PT=['Domingo','Segunda-feira','Terça-feira','Quarta-feira','Quinta-feira','Sexta-feira','Sábado'];
+    function toMins(t){const[h,m]=t.split(':').map(Number);return h*60+m;}
+    const now=new Date(),dow=now.getDay(),nowMins=now.getHours()*60+now.getMinutes();
+    if(dow>=1&&dow<=5){document.querySelectorAll('th[data-dow]').forEach(th=>{if(Number(th.dataset.dow)===dow)th.classList.add('today-col');});document.querySelectorAll('tbody tr').forEach(row=>{const cells=row.querySelectorAll('td');if(cells[dow])cells[dow].classList.add('today-col');});}
+    document.querySelectorAll('tbody tr[data-start]').forEach(row=>{const s=toMins(row.dataset.start),e=toMins(row.dataset.end);if(nowMins>=s&&nowMins<e){const tc=row.querySelector('.time-cell');tc.classList.add('live-row');const badge=document.createElement('div');badge.className='live-badge';badge.innerHTML='<div class="live-dot"></div> agora';tc.appendChild(badge);}});
+    if(dow>=1&&dow<=5){
+      const todayClasses=SCHEDULE[dow]||[];
+      if(todayClasses.length){const banner=document.getElementById('today-banner');document.getElementById('banner-label').textContent=DAYS_PT[dow]+' —';const box=document.getElementById('banner-classes');todayClasses.forEach(c=>{const isLive=nowMins>=toMins(c.start)&&nowMins<toMins(c.end);const chip=document.createElement('span');chip.className='today-chip'+(isLive?' live':'');chip.textContent=SUBJECTS[c.code]?SUBJECTS[c.code].name:c.code;box.appendChild(chip);});banner.classList.add('visible');}
+    } else {
+      const banner=document.getElementById('today-banner');
+      document.getElementById('banner-label').textContent=DAYS_PT[dow]+' —';
+      document.getElementById('banner-classes').innerHTML='<span class="today-chip">Sem aulas regulares hoje</span>';
+      banner.classList.add('visible');
+    }
+    const legend=document.getElementById('legend'),seen=new Set();
+    document.querySelectorAll('.subj-pill[data-code]').forEach(el=>{const code=el.dataset.code;if(!seen.has(code)&&SUBJECTS[code]){seen.add(code);const meta=SUBJECTS[code];const chip=document.createElement('div');chip.className='legend-chip '+meta.cls;chip.innerHTML=`<span class="legend-dot" style="background:${meta.dot}"></span>${meta.name}`;legend.appendChild(chip);}});
+    document.getElementById('export-pdf').addEventListener('click', async function() {
+      const btn = this;
+      btn.disabled = true;
+      btn.textContent = '⏳ Gerando...';
+
+      const card = document.querySelector('.schedule-card');
+      const wrap = card.querySelector('.table-wrap');
+      const pc = card.style.overflow, pw = wrap.style.overflowX;
+
+      card.style.overflow = 'visible';
+      wrap.style.overflowX = 'visible';
+
+      try {
+        await html2pdf().set({
+          margin: [8, 10],
+          filename: 'grade-horaria-1INFO2.pdf',
+          image: { type: 'jpeg', quality: 0.98 },
+          html2canvas: { scale: 2, useCORS: true, scrollX: 0, scrollY: 0 },
+          jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' }
+        }).from(document.querySelector('main')).save();
+      } finally {
+        card.style.overflow = pc;
+        wrap.style.overflowX = pw;
+        btn.disabled = false;
+        btn.textContent = '⬇ Exportar PDF';
+      }
+    });
+  </script>
+</body>
+</html>

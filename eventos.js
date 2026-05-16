@@ -17,15 +17,11 @@ window.horariosAtendimento = [
   { "professor": "Roberta",         "materia": "Interfaces Web",           "horario": "Terça-feira das 18h às 19h",                                "sala": "J207 ou INFO3",              "email": "roberta.sinoara@ifsp.edu.br" }
 ];
 
-// Recarrega ao voltar para a aba após 5 min inativo
-var _lastActive = Date.now();
+// Recarrega a página sempre que o usuário voltar para a aba (mesmo se já estava aberta)
 document.addEventListener('visibilitychange', function() {
-  if (document.visibilityState === 'visible') {
-    if (Date.now() - _lastActive > 5 * 60 * 1000) window.location.reload();
-  } else {
-    _lastActive = Date.now();
-  }
+  if (document.visibilityState === 'visible') window.location.reload();
 });
+
 window.addEventListener('pageshow', function(e) {
   if (e.persisted) window.location.reload();
 });

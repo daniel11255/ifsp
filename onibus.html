@@ -236,6 +236,14 @@
       }
     }
     refresh(); setInterval(refresh, 30000);
+
+    // Recarrega sempre ao voltar para a aba para atualizar os horários do ônibus
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible') window.location.reload();
+    });
+    window.addEventListener('pageshow', (e) => {
+      if (e.persisted) window.location.reload();
+    });
   </script>
 </body>
 </html>

@@ -329,6 +329,14 @@
         btn.textContent = originalText;
       }
     });
+
+    // Recarrega sempre ao voltar para a aba para atualizar o status das aulas (Live/Concluída)
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible') window.location.reload();
+    });
+    window.addEventListener('pageshow', (e) => {
+      if (e.persisted) window.location.reload();
+    });
   </script>
 </body>
 </html>

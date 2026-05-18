@@ -17,11 +17,116 @@ window.horariosAtendimento = [
   { "professor": "Roberta",         "materia": "Interfaces Web",           "horario": "Terça-feira das 18h às 19h",                                "sala": "J207 ou INFO3",              "email": "roberta.sinoara@ifsp.edu.br" }
 ];
 
-// Recarrega a página sempre que o usuário voltar para a aba (mesmo se já estava aberta)
-document.addEventListener('visibilitychange', function() {
-  if (document.visibilityState === 'visible') window.location.reload();
-});
+window.portalCalendarCategories = {
+  atividade: {
+    label: 'Atividade',
+    color: '#C68C1A',
+    soft: '#FBF0D0'
+  },
+  prova: {
+    label: 'Prova',
+    color: '#B85C2A',
+    soft: '#F4E2D2'
+  },
+  'sabado-letivo': {
+    label: 'Sábado letivo',
+    color: '#2D7A50',
+    soft: '#D4EDE0'
+  }
+};
 
-window.addEventListener('pageshow', function(e) {
-  if (e.persisted) window.location.reload();
-});
+window.portalCalendarDefaults = [
+  {
+    id: 'default-prova-matematica',
+    title: 'Prova de Matemática',
+    date: '2026-05-22',
+    start: '16:20',
+    end: '18:00',
+    category: 'prova',
+    subject: 'Matemática',
+    description: 'Avaliação bimestral. Conferir conteúdos combinados em sala.',
+    links: [],
+    attachments: []
+  },
+  {
+    id: 'default-atividade-web',
+    title: 'Entrega de atividade de Interfaces Web',
+    date: '2026-05-28',
+    start: '14:25',
+    end: '16:05',
+    category: 'atividade',
+    subject: 'Interfaces Web',
+    description: 'Finalizar a atividade prática e revisar responsividade antes da entrega.',
+    links: [
+      { label: 'SUAP', url: 'https://suap.ifsp.edu.br/' }
+    ],
+    attachments: []
+  },
+  {
+    id: 'default-sabado-letivo',
+    title: 'Sábado letivo',
+    date: '2026-05-30',
+    start: '12:35',
+    end: '18:00',
+    category: 'sabado-letivo',
+    subject: 'Geral',
+    description: 'Reposição letiva seguindo a grade de sexta-feira.',
+    scheduleDow: 5,
+    links: [],
+    attachments: []
+  }
+];
+
+(function () {
+  const storageKey = 'portalCalendarEvents:v1';
+
+  function readStoredCalendarEvents() {
+    try {
+      const raw = localStorage.getItem(storageKey);
+      const parsed = raw ? JSON.parse(raw) : [];
+      return Array.isArray(parsed) ? parsed : [];
+    } catch (error) {
+      console.warn('Não foi possível carregar os eventos salvos.', error);
+      return [];
+    }
+  }
+
+  function saveStoredCalendarEvents(events) {
+    try {
+      localStorage.setItem(storageKey, JSON.stringify(Array.isArray(events) ? events : []));
+      return true;
+    } catch (error) {
+      console.warn('Não foi possível salvar os eventos.', error);
+      return false;
+    }
+  }
+
+  function getPortalCalendarEvents() {
+    const byId = new Map(window.portalCalendarDefaults.map((event) => [event.id, event]));
+    readStoredCalendarEvents().forEach((event) => {
+      if (!event || !event.id) return;
+      if (event.deleted) byId.delete(event.id);
+      else byId.set(event.id, event);
+    });
+    return [...byId.values()].sort((a, b) => {
+      const dateCompare = String(a.date || '').localeCompare(String(b.date || ''));
+      if (dateCompare !== 0) return dateCompare;
+      return String(a.start || '').localeCompare(String(b.start || ''));
+    });
+  }
+
+  function buildSabadosLetivos(events) {
+    return events.reduce((days, event) => {
+      if (event.category === 'sabado-letivo' && event.date) {
+        days[event.date] = Number(event.scheduleDow) || 1;
+      }
+      return days;
+    }, {});
+  }
+
+  window.calendarStorageKey = storageKey;
+  window.readStoredCalendarEvents = readStoredCalendarEvents;
+  window.saveStoredCalendarEvents = saveStoredCalendarEvents;
+  window.getPortalCalendarEvents = getPortalCalendarEvents;
+  window.sabadosLetivos = buildSabadosLetivos(getPortalCalendarEvents());
+})();

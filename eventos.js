@@ -23,6 +23,11 @@ window.portalCalendarCategories = {
     color: '#C68C1A',
     soft: '#FBF0D0'
   },
+  tarefa: {
+    label: 'Tarefa',
+    color: '#4B5563',
+    soft: '#F3F4F6'
+  },
   prova: {
     label: 'Prova',
     color: '#B85C2A',
@@ -40,8 +45,7 @@ window.portalCalendarDefaults = [
     id: 'default-prova-matematica',
     title: 'Prova de Matemática',
     date: '2026-05-22',
-    start: '16:20',
-    end: '18:00',
+    horario: '16:20 às 18:00',
     category: 'prova',
     subject: 'Matemática',
     description: 'Avaliação bimestral. Conferir conteúdos combinados em sala.',
@@ -52,8 +56,7 @@ window.portalCalendarDefaults = [
     id: 'default-atividade-web',
     title: 'Entrega de atividade de Interfaces Web',
     date: '2026-05-28',
-    start: '14:25',
-    end: '16:05',
+    horario: '14:25 às 16:05',
     category: 'atividade',
     subject: 'Interfaces Web',
     description: 'Finalizar a atividade prática e revisar responsividade antes da entrega.',
@@ -66,12 +69,10 @@ window.portalCalendarDefaults = [
     id: 'default-sabado-letivo',
     title: 'Sábado letivo',
     date: '2026-05-30',
-    start: '12:35',
-    end: '18:00',
+    horario: '12:35 às 18:00',
     category: 'sabado-letivo',
     subject: 'Geral',
     description: 'Reposição letiva seguindo a grade de sexta-feira.',
-    scheduleDow: 5,
     links: [],
     attachments: []
   }
@@ -111,22 +112,36 @@ window.portalCalendarDefaults = [
     return [...byId.values()].sort((a, b) => {
       const dateCompare = String(a.date || '').localeCompare(String(b.date || ''));
       if (dateCompare !== 0) return dateCompare;
-      return String(a.start || '').localeCompare(String(b.start || ''));
+      return String(a.horario || '').localeCompare(String(b.horario || ''));
     });
   }
 
-  function buildSabadosLetivos(events) {
-    return events.reduce((days, event) => {
-      if (event.category === 'sabado-letivo' && event.date) {
-        days[event.date] = Number(event.scheduleDow) || 1;
+  /**
+   * Deleta múltiplos eventos pelo ID (Exclusão em massa).
+   * @param {string[]} ids - Lista de IDs dos eventos a serem removidos.
+   */
+  function deleteCalendarEvents(ids) {
+    if (!Array.isArray(ids) || ids.length === 0) return false;
+
+    const stored = readStoredCalendarEvents();
+    const updated = [...stored];
+
+    ids.forEach(id => {
+      const index = updated.findIndex(e => e.id === id);
+      if (index > -1) {
+        updated[index].deleted = true;
+      } else {
+        // Se for um evento padrão (default) ainda não presente no localStorage, adiciona como deletado
+        updated.push({ id, deleted: true });
       }
-      return days;
-    }, {});
+    });
+
+    return saveStoredCalendarEvents(updated);
   }
 
   window.calendarStorageKey = storageKey;
   window.readStoredCalendarEvents = readStoredCalendarEvents;
   window.saveStoredCalendarEvents = saveStoredCalendarEvents;
   window.getPortalCalendarEvents = getPortalCalendarEvents;
-  window.sabadosLetivos = buildSabadosLetivos(getPortalCalendarEvents());
+  window.deleteCalendarEvents = deleteCalendarEvents;
 })();

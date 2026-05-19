@@ -5,42 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Ônibus — Portal 1INFO-2</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@400;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="shared.css">
   <style>
-    :root{
-      --bg:#F5F0EA;--surface:#FDFBF8;--surface-2:#ECE7DC;--border:#D9D0C3;
-      --accent:#B85C2A;--accent-lt:#F4E2D2;--accent-dk:#8C401C;
-      --text:#1E1711;--muted:#7C6E62;
-      --green:#2D7A50;--green-lt:#D4EDE0;
-      --radius:14px;
-      --mono:'JetBrains Mono',monospace;
-      --sans:'Inter',sans-serif;
-      --display:'Playfair Display',serif;
-      --sh:0 1px 3px rgba(30,20,10,.06),0 4px 16px rgba(30,20,10,.06);
-    }
-    html[data-theme="dark"]{
-      --bg:#171310;--surface:#201B18;--surface-2:#2C2520;--border:#3D332C;
-      --accent:#D07848;--accent-lt:#281A10;--accent-dk:#E89870;
-      --text:#EDE3D8;--muted:#8A7A6E;
-      --green:#40A068;--green-lt:#102018;
-    }
-    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-    body{background:var(--bg);font-family:var(--sans);min-height:100vh;color:var(--text);-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-rendering:optimizeLegibility}
-
-    /* NAV PADRONIZADA */
-    .topnav{position:sticky;top:0;z-index:200;background:rgba(245,240,234,.88);backdrop-filter:blur(20px) saturate(1.8);-webkit-backdrop-filter:blur(20px) saturate(1.8);border-bottom:1px solid var(--border);height:62px;padding:0 24px;display:flex;align-items:center;justify-content:space-between}
-    html[data-theme="dark"] .topnav{background:rgba(23,19,16,.9)}
-    .nav-brand{display:flex;align-items:center;gap:11px;text-decoration:none}
-    .nav-logo{width:32px;height:32px;border-radius:8px;background:var(--accent);display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(184,92,42,.35)}
-    .nav-logo svg{width:16px;height:16px;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-    .nav-title{font-size:14px;font-weight:700;color:var(--text);letter-spacing:-.01em}
-    .nav-tag{font-family:var(--mono);font-size:10px;background:var(--accent-lt);color:var(--accent);padding:2px 7px;border-radius:5px;border:1px solid var(--border)}
-    .nav-links{display:flex;gap:4px;align-items:center;padding-right:72px;background:var(--surface-2);padding:4px;border-radius:12px;border:1px solid var(--border);position:relative}
-    .nav-link{text-decoration:none;cursor:pointer;font-family:var(--sans);font-size:13px;font-weight:600;color:var(--muted);padding:6px 14px;border-radius:8px;transition:all 0.4s cubic-bezier(0.4, 0, 0.2, 1);border:1px solid transparent;position:relative;z-index:1}
-    .nav-link:hover{background:var(--surface-2);color:var(--text)}
-    .nav-link.active{background:var(--accent);color:#fff;box-shadow:0 4px 12px rgba(184,92,42,0.25);animation:pillSlide 0.5s cubic-bezier(0.2, 1, 0.3, 1) both}
-    @keyframes pillSlide { from { transform: translateX(-15px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-
-    main{max-width:980px;margin:0 auto;padding:28px 20px 60px}
+    main{max-width:980px;margin:0 auto;padding:28px 20px 60px;}
     .smart-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px}
     .smart-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--sh);padding:20px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px}
     .smart-card.going{border-left:4px solid var(--accent)}
@@ -82,72 +49,48 @@
     .legend-dot.fc{background:var(--green-lt);color:var(--green);border:1px solid var(--green-lt)}
     .legend-dot.fcv{background:var(--surface-2);color:var(--text);border:1px solid var(--border)}
 
-    /* ANIMATIONS */
-    @keyframes reveal{0%{opacity:0;transform:perspective(800px) rotateX(-12deg) translateY(20px);filter:blur(6px)}100%{opacity:1;transform:perspective(800px) rotateX(0deg) translateY(0);filter:blur(0)}}
-    @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
-    
     .smart-card:nth-child(1){animation:reveal 0.6s cubic-bezier(0.2,1,0.3,1) both}
     .smart-card:nth-child(2){animation:reveal 0.6s 0.1s cubic-bezier(0.2,1,0.3,1) both}
     .bus-panel:nth-child(1){animation:reveal 0.7s 0.2s cubic-bezier(0.2,1,0.3,1) both}
     .bus-panel:nth-child(2){animation:reveal 0.7s 0.3s cubic-bezier(0.2,1,0.3,1) both}
     .legend-card{animation:fadeUp 0.6s 0.4s cubic-bezier(0.2,1,0.3,1) both}
     .reveal-pill{animation:reveal 0.5s cubic-bezier(0.2,1,0.3,1) both}
-
-    /* BOTTOM NAV */
-    .bottom-nav{display:none;position:fixed;bottom:0;left:0;right:0;z-index:150;background:var(--surface);border-top:1px solid var(--border);padding:6px 0 calc(6px + env(safe-area-inset-bottom));transition:background .3s}
-    .bn-items{display:flex;justify-content:space-around;align-items:center}
-    .bn-link{display:flex;flex-direction:column;align-items:center;gap:2px;text-decoration:none;color:var(--muted);font-size:10px;font-weight:700;padding:8px 4px;border-radius:12px;flex:1;transition:all 0.4s cubic-bezier(0.4, 0, 0.2, 1);cursor:pointer;font-family:var(--sans);position:relative;background:var(--surface-2);margin:0 4px;border:1px solid var(--border)}
-    .bn-link.active{background:var(--accent-lt);color:var(--accent);animation:pillSlide 0.5s cubic-bezier(0.2, 1, 0.3, 1) both}
-    .bn-link svg{width:20px;height:20px;flex-shrink:0;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-    .bn-link.active{color:var(--accent)}
-
-    footer{text-align:center;padding:32px;font-family:var(--mono);font-size:11px;color:var(--muted)}
     @media(max-width:680px){
       .topnav{padding:0 16px}main{padding:20px 12px 48px}.smart-row,.bus-columns{grid-template-columns:1fr}.smart-time{font-size:26px}
     }
-    @media(max-width:640px){.nav-links{display:none}.bottom-nav{display:block}}
   </style>
   <script>if(localStorage.getItem('theme')==='dark')document.documentElement.setAttribute('data-theme','dark');</script>
 </head>
 <body>
+  <script src="shared.js"></script>
   <script src="theme.js" defer></script>
+
+  <aside class="sidebar" id="sidebar">
+    <div class="nav-brand">
+      <div class="nav-logo"><svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></div>
+      <div>
+        <div class="nav-title">Portal</div>
+        <div class="nav-tag" style="margin-top:2px">1INFO-2</div>
+      </div>
+    </div>
+    <nav class="sidebar-nav">
+      <a href="index.html" class="sidebar-link"><svg viewBox="0 0 24 24"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/><polyline points="9 21 9 12 15 12 15 21"/></svg> Portal</a>
+      <a href="aulas.html" class="sidebar-link"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> Grade</a>
+      <a href="calendario.html" class="sidebar-link"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><path d="M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01"/></svg> Calendário</a>
+      <a href="onibus.html" class="sidebar-link active"><svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/><path d="M7 8h10M7 11h5"/></svg> Ônibus</a>
+      <a href="horarios.html" class="sidebar-link"><svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-8 0v2"/><circle cx="12" cy="7" r="4"/></svg> Professores</a>
+    </nav>
+  </aside>
+  <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebar()"></div>
+
   <nav class="topnav">
+    <button class="menu-btn" onclick="toggleSidebar()"><svg viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
     <a href="index.html" class="nav-brand">
       <div class="nav-logo"><svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></div>
       <span class="nav-title">Portal</span>
       <span class="nav-tag">1INFO-2</span>
     </a>
-    <nav class="nav-links">
-      <a href="aulas.html"    class="nav-link">Grade</a>
-      <a href="calendario.html" class="nav-link">Calendário</a>
-      <a href="onibus.html"   class="nav-link active">Ônibus</a>
-      <a href="horarios.html" class="nav-link">Professores</a>
-    </nav>
-  </nav>
-
-  <nav class="bottom-nav">
-    <div class="bn-items">
-      <a href="index.html" class="bn-link">
-        <svg viewBox="0 0 24 24"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/><polyline points="9 21 9 12 15 12 15 21"/></svg>
-        <span>Portal</span>
-      </a>
-      <a href="aulas.html" class="bn-link">
-        <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-        <span>Grade</span>
-      </a>
-      <a href="calendario.html" class="bn-link">
-        <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><path d="M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01"/></svg>
-        <span>Calendário</span>
-      </a>
-      <a href="onibus.html" class="bn-link active">
-        <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/><path d="M7 8h10M7 11h5"/></svg>
-        <span>Ônibus</span>
-      </a>
-      <a href="horarios.html" class="bn-link">
-        <svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-8 0v2"/><circle cx="12" cy="7" r="4"/></svg>
-        <span>Professores</span>
-      </a>
-    </div>
+    <div style="width:38px" aria-hidden="true"></div> <!-- Spacer for balance -->
   </nav>
   <main>
     <div class="smart-row">
@@ -199,7 +142,6 @@
     const PERIODS=[{label:'Manhã',min:0,max:11*60+59},{label:'Tarde',min:12*60,max:17*60+59},{label:'Noite',min:18*60,max:24*60}];
     const TAG_CLASSES={'JL':'jl','FC VOLVO':'fcv','FC':'fc'};
     const DOM={go:{panel:document.getElementById('panel-go'),time:document.getElementById('smart-time-go'),count:document.getElementById('smart-count-go')},ret:{panel:document.getElementById('panel-ret'),time:document.getElementById('smart-time-ret'),count:document.getElementById('smart-count-ret')}};
-    function toMins(t){const[h,m]=t.split(':').map(Number);return h*60+m;}
     function fmtCountdown(mins){if(mins<1)return'agora';if(mins<60)return`em ${mins} min`;const h=Math.floor(mins/60),m=mins%60;return m===0?`em ${h}h`:`em ${h}h ${m}min`;}
     function renderPanel(dir,nowMins,nextBus){
       let html='';
@@ -236,14 +178,14 @@
       if(isWeekend && !document.getElementById('weekend-alert')){
         const alert = document.createElement('div');
         alert.id = 'weekend-alert';
-        alert.style.cssText = 'background:var(--accent-lt); color:var(--accent); padding:16px; border-radius:var(--radius); margin-bottom:24px; font-weight:700; text-align:center; border:1px solid var(--border); animation: fadeUp 0.4s ease;';
+        alert.style.cssText = 'background:var(--accent-lt); color:var(--accent); padding:16px; border-radius:var(--radius); margin-bottom:24px; font-weight:700; text-align:center; border:1px solid var(--border); animation: fadeUp 0.4s ease;'; // Corrigido para usar var(--border)
         alert.innerHTML = '⚠️ Atenção: Esta linha de ônibus não opera aos sábados e domingos.';
         document.querySelector('main').prepend(alert);
         document.querySelectorAll('.bus-panel').forEach(p => p.style.opacity = '0.5');
       }
     }
     refresh(); setInterval(refresh, 30000);
-    // Atualiza os horários sem recarregar a página inteira.
+
     document.addEventListener('visibilitychange', () => {
       if (document.visibilityState === 'visible') refresh();
     });

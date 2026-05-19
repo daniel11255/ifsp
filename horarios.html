@@ -5,130 +5,120 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Professores — Portal 1INFO-2</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@400;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="shared.css">
   <style>
-    :root{
-      --bg:#F5F0EA;--surface:#FDFBF8;--surface-2:#ECE7DC;--border:#D9D0C3;
-      --accent:#B85C2A;--accent-lt:#F4E2D2;--accent-dk:#8C401C;
-      --text:#1E1711;--muted:#7C6E62;
-      --green:#2D7A50;--green-lt:#D4EDE0;
-      --radius:14px;
-      --mono:'JetBrains Mono',monospace;
-      --sans:'Inter',sans-serif;
-      --display:'Playfair Display',serif;
-      --sh:0 1px 3px rgba(30,20,10,.06),0 4px 16px rgba(30,20,10,.06);
-    }
-    html[data-theme="dark"]{
-      --bg:#171310;--surface:#201B18;--surface-2:#2C2520;--border:#3D332C;
-      --accent:#D07848;--accent-lt:#281A10;--accent-dk:#E89870;
-      --text:#EDE3D8;--muted:#8A7A6E;
-      --green:#40A068;--green-lt:#102018;
-    }
-    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-    body{background:var(--bg);font-family:var(--sans);min-height:100vh;color:var(--text);-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-rendering:optimizeLegibility}
-
-    /* NAV */
-    .topnav{position:sticky;top:0;z-index:200;background:rgba(245,240,234,.88);backdrop-filter:blur(20px) saturate(1.8);-webkit-backdrop-filter:blur(20px) saturate(1.8);border-bottom:1px solid var(--border);height:62px;padding:0 24px;display:flex;align-items:center;justify-content:space-between;transition:background .3s}
-    html[data-theme="dark"] .topnav{background:rgba(23,19,16,.9)}
-    .nav-brand{display:flex;align-items:center;gap:11px;text-decoration:none}
-    .nav-logo{width:32px;height:32px;border-radius:8px;background:var(--accent);display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(184,92,42,.35)}
-    .nav-logo svg{width:15px;height:15px;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-    .nav-title{font-size:14px;font-weight:700;color:var(--text);letter-spacing:-.01em}
-    .nav-tag{font-family:var(--mono);font-size:10px;background:var(--accent-lt);color:var(--accent);padding:2px 7px;border-radius:5px;border:1px solid var(--border)}
-    .nav-links{display:flex;gap:4px;align-items:center;padding-right:72px;background:var(--surface-2);padding:4px;border-radius:12px;border:1px solid var(--border);position:relative}
-    .nav-link{text-decoration:none;cursor:pointer;font-family:var(--sans);font-size:13px;font-weight:600;color:var(--muted);padding:6px 14px;border-radius:8px;transition:all 0.4s cubic-bezier(0.4, 0, 0.2, 1);border:1px solid transparent;position:relative;z-index:1}
-    .nav-link:hover{background:var(--surface-2);color:var(--text)}
-    .nav-link.active{background:var(--accent);color:#fff;box-shadow:0 4px 12px rgba(184,92,42,0.25);animation:pillSlide 0.5s cubic-bezier(0.2, 1, 0.3, 1) both}
-    @keyframes pillSlide { from { transform: translateX(-15px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-
-    /* BOTTOM NAV */
-    .bottom-nav{display:none;position:fixed;bottom:0;left:0;right:0;z-index:150;background:var(--surface);border-top:1px solid var(--border);padding:6px 0 calc(6px + env(safe-area-inset-bottom));transition:background .3s}
-    .bn-items{display:flex;justify-content:space-around;align-items:center;padding:0 8px}
-    .bn-link{display:flex;flex-direction:column;align-items:center;gap:2px;text-decoration:none;color:var(--muted);font-size:10px;font-weight:700;padding:8px 4px;border-radius:12px;flex:1;transition:all 0.4s cubic-bezier(0.4, 0, 0.2, 1);cursor:pointer;font-family:var(--sans);position:relative}
-    .bn-link.active{background:var(--accent-lt);color:var(--accent);animation:pillSlide 0.5s cubic-bezier(0.2, 1, 0.3, 1) both}
-    .bn-link svg{width:20px;height:20px;flex-shrink:0;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-
-    .container{max-width:1000px;margin:0 auto;padding:28px 20px 60px}
-    .page-header{margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+    .container{max-width:1000px;margin:0 auto;padding:28px 20px 60px;}
+    .page-header{margin-bottom:24px;display:flex;flex-direction:column;align-items:flex-start;gap:16px}
     .page-title{font-family:var(--display);font-size:24px;font-weight:700;color:var(--text);letter-spacing:-.02em}
     .page-sub{font-family:var(--mono);font-size:11px;color:var(--muted);margin-top:3px}
-    #searchBar{padding:10px 16px;border:1px solid var(--border);border-radius:9px;background:var(--surface);color:var(--text);font-family:var(--sans);font-size:13px;width:100%;max-width:300px;transition:all .2s}
+    
+    /* Container da Barra de Pesquisa */
+    .search-wrapper{position:relative;width:100%;display:flex;align-items:center}
+    #searchBar{padding:12px 140px 12px 16px;border:1px solid var(--border);border-radius:10px;background:var(--surface);color:var(--text);font-family:var(--sans);font-size:14px;width:100%;transition:all .2s;box-shadow:var(--sh)}
     #searchBar:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(184,92,42,.1)}
     #searchBar::placeholder{color:var(--muted)}
-    .table-card{background:var(--surface);border-radius:var(--radius);border:1px solid var(--border);box-shadow:var(--sh);overflow:hidden}
+    
+    /* Indicador de Carregamento na Barra de Pesquisa */
+    .search-loading-indicator {position:absolute;right:12px;display:flex;align-items:center;gap:8px;opacity:0;pointer-events:none;transition:opacity 0.2s ease;font-family:var(--mono);font-size:10px;color:var(--muted);letter-spacing:0.05em}
+    .search-loading-indicator.active {opacity:1}
+    .status-spinner{width:14px;height:14px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    
+    /* Layout do Bloco de Informações (Tabela) */
+    .table-card{background:var(--surface);border-radius:var(--radius);border:1px solid var(--border);box-shadow:var(--sh);overflow:hidden;position:relative;min-height:200px;transition:opacity 0.2s ease, transform 0.2s ease}
     .table-responsive{overflow-x:auto}
+    
+    /* Classe adicionada via JS para ocultar o bloco inteiro ao digitar */
+    .table-card.searching {opacity:0;pointer-events:none;transform:translateY(10px)}
+    
+    /* Tela de Nenhum Resultado */
+    .empty-overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--surface);z-index:10;opacity:0;pointer-events:none;transition:opacity .2s ease;text-align:center;padding:40px}
+    .empty-overlay.active{opacity:1;pointer-events:auto}
+    
     table{width:100%;border-collapse:collapse}
     th{background:var(--accent);color:#fff;padding:14px 18px;font-family:var(--mono);font-weight:700;text-transform:uppercase;font-size:10px;letter-spacing:.1em;text-align:left}
     td{padding:14px 18px;border-bottom:1px solid var(--border);color:var(--text);font-size:13px}
     tbody tr:last-child td{border-bottom:none}
     tbody tr:hover td{background:var(--surface-2)}
     .email-link{color:var(--accent);text-decoration:none;font-weight:500;word-break:break-all}
-    .hl{background:rgba(184,92,42,0.12);color:var(--accent);padding:0;margin:0;border-radius:2px;font-weight:600;display:inline}
-    @keyframes reveal{0%{opacity:0;transform:perspective(800px) rotateX(-12deg) translateY(30px);filter:blur(6px)}100%{opacity:1;transform:perspective(800px) rotateX(0deg) translateY(0);filter:blur(0)}}
-    @keyframes spin{to{transform:rotate(360deg)}}
-    .loader-container{display:none;justify-content:center;align-items:center;padding:40px;width:100%}
-    .spinner{width:32px;height:32px;border:3px solid var(--surface-2);border-top-color:var(--accent);border-radius:50%;animation:spin .6s cubic-bezier(0.5,0.1,0.4,0.9) infinite}
-    .table-responsive{transition:opacity .4s ease}
-    .reveal{animation:reveal 0.8s cubic-bezier(0.22,1,0.36,1) both;transform-origin:center top}
+    
+    .hl{background:rgba(184,92,42,0.15);color:var(--accent);padding:2px 0;border-radius:2px;font-weight:600}
+    
+    @keyframes reveal{0%{opacity:0;transform:translateY(8px)}100%{opacity:1;transform:translateY(0)}}
+    .reveal{animation:reveal 0.3s cubic-bezier(0.22,1,0.36,1) both}
     .email-link:hover{text-decoration:underline}
     .copy-btn{background:var(--surface-2);border:1px solid var(--border);color:var(--muted);padding:5px;border-radius:6px;cursor:pointer;display:inline-flex;align-items:center;transition:all .2s;line-height:0}
     .copy-btn:hover{background:var(--accent);color:#fff;border-color:var(--accent)}
-    footer{text-align:center;padding:32px;font-family:var(--mono);font-size:11px;color:var(--muted)}
     .toast-copy{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:var(--text);color:var(--bg);padding:8px 16px;border-radius:10px;font-size:12px;font-weight:600;z-index:1000;box-shadow:var(--sh);pointer-events:none;animation:toast-in .3s ease-out;transition:opacity .3s}
     @keyframes toast-in{from{opacity:0;transform:translate(-50%,12px)}to{opacity:1;transform:translate(-50%,0)}}
-    @media(max-width:640px){.nav-links{display:none}.bottom-nav{display:block}.topnav{padding:0 16px}.container{padding:16px 12px 40px}.page-header{flex-direction:column;align-items:flex-start}#searchBar{max-width:100%}table,thead,tbody,th,td,tr{display:block}thead tr{position:absolute;top:-9999px;left:-9999px}tr{border:1px solid var(--border);border-radius:12px;margin-bottom:12px;padding:8px;background:var(--surface)}td{border:none;border-bottom:1px solid var(--border);position:relative;padding-left:40% !important;min-height:44px;display:flex;align-items:center}td:last-child{border-bottom:none}td::before{content:attr(data-label);position:absolute;left:14px;width:35%;font-family:var(--mono);font-weight:600;font-size:10px;color:var(--muted);text-transform:uppercase;white-space:nowrap}}
+    
+    @media(max-width:640px){
+      .topnav{padding:0 16px}.container{padding:16px 12px 40px}#searchBar{max-width:100%;padding-right:120px}
+      #searchBar + .search-loading-indicator span {display:none}
+      table,thead,tbody,th,td,tr{display:block}
+      thead tr{position:absolute;top:-9999px;left:-9999px}
+      tr{border:1px solid var(--border);border-radius:12px;margin-bottom:12px;padding:8px;background:var(--surface)}
+      td{border:none;border-bottom:1px solid var(--border);position:relative;padding-left:40% !important;min-height:44px;display:flex;align-items:center}
+      td:last-child{border-bottom:none}
+      td::before{content:attr(data-label);position:absolute;left:14px;width:35%;font-family:var(--mono);font-weight:600;font-size:10px;color:var(--muted);text-transform:uppercase;white-space:nowrap}
+    }
   </style>
   <script>if(localStorage.getItem('theme')==='dark')document.documentElement.setAttribute('data-theme','dark');</script>
 </head>
 <body>
+  <script src="shared.js"></script>
   <script src="theme.js" defer></script>
   <script src="eventos.js"></script>
+
+  <aside class="sidebar" id="sidebar">
+    <div class="nav-brand">
+      <div class="nav-logo"><svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></div>
+      <div>
+        <div class="nav-title">Portal</div>
+        <div class="nav-tag" style="margin-top:2px">1INFO-2</div>
+      </div>
+    </div>
+    <nav class="sidebar-nav">
+      <a href="index.html" class="sidebar-link"><svg viewBox="0 0 24 24"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/><polyline points="9 21 9 12 15 12 15 21"/></svg> Portal</a>
+      <a href="aulas.html" class="sidebar-link"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> Grade</a>
+      <a href="calendario.html" class="sidebar-link"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><path d="M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01"/></svg> Calendário</a>
+      <a href="onibus.html" class="sidebar-link"><svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/><path d="M7 8h10M7 11h5"/></svg> Ônibus</a>
+      <a href="horarios.html" class="sidebar-link active"><svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-8 0v2"/><circle cx="12" cy="7" r="4"/></svg> Professores</a>
+    </nav>
+  </aside>
+  <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebar()"></div>
+
   <nav class="topnav">
+    <button class="menu-btn" onclick="toggleSidebar()"><svg viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
     <a href="index.html" class="nav-brand">
       <div class="nav-logo"><svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></div>
       <span class="nav-title">Portal</span>
       <span class="nav-tag">1INFO-2</span>
     </a>
-    <nav class="nav-links">
-      <a href="aulas.html"    class="nav-link">Grade</a>
-      <a href="calendario.html" class="nav-link">Calendário</a>
-      <a href="onibus.html"   class="nav-link">Ônibus</a>
-      <a href="horarios.html" class="nav-link active">Professores</a>
-    </nav>
+    <div style="width:38px"></div>
   </nav>
-  <nav class="bottom-nav">
-    <div class="bn-items">
-      <a href="index.html" class="bn-link">
-        <svg viewBox="0 0 24 24"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/><polyline points="9 21 9 12 15 12 15 21"/></svg>
-        <span>Portal</span>
-      </a>
-      <a href="aulas.html" class="bn-link">
-        <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-        <span>Grade</span>
-      </a>
-      <a href="calendario.html" class="bn-link">
-        <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><path d="M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01"/></svg>
-        <span>Calendário</span>
-      </a>
-      <a href="onibus.html" class="bn-link">
-        <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/><path d="M7 8h10M7 11h5"/></svg>
-        <span>Ônibus</span>
-      </a>
-      <a href="horarios.html" class="bn-link active">
-        <svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-8 0v2"/><circle cx="12" cy="7" r="4"/></svg>
-        <span>Professores</span>
-      </a>
-    </div>
-  </nav>
+
   <div class="container">
     <div class="page-header">
       <div>
         <div class="page-title">Atendimento de Professores</div>
         <div class="page-sub">// Horários e contatos disponíveis</div>
       </div>
-      <input type="text" id="searchBar" placeholder="Buscar professor ou matéria...">
+      <div class="search-wrapper">
+        <input type="text" id="searchBar" placeholder="Buscar professor ou matéria...">
+        <div id="searchIndicator" class="search-loading-indicator">
+          <div class="status-spinner"></div>
+          <span>PROCESSANDO...</span>
+        </div>
+      </div>
     </div>
-    <div class="table-card">
-      <div id="loader" class="loader-container"><div class="spinner"></div></div>
+    
+    <!-- Bloco de Informações principal -->
+    <div id="tableCard" class="table-card">
+      <div id="emptyOverlay" class="empty-overlay">
+        <div id="emptyContent"></div>
+      </div>
+      
       <div class="table-responsive">
         <table>
           <thead>
@@ -146,65 +136,106 @@
     </div>
   </div>
   <footer>// Portal 1INFO-2</footer>
+
   <script>
-    function copyEmail(email,btn){navigator.clipboard.writeText(email).then(()=>{const original=btn.innerHTML;btn.innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>';btn.style.color="#0F9D6A";const t=document.createElement('div');t.className='toast-copy';t.textContent='E-mail copiado!';document.body.appendChild(t);setTimeout(()=>{btn.innerHTML=original;btn.style.color="";t.style.opacity='0';setTimeout(()=>t.remove(),300);},2000);});}
-    document.addEventListener('DOMContentLoaded',()=>{
-      const tbody=document.getElementById('lista-professores');
-      const searchBar=document.getElementById('searchBar');
-      const loader=document.getElementById('loader');
-      const tableArea=document.querySelector('.table-responsive');
-      const norm = s => s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
-      const highlight = (text, term) => {
-        const cleanTerm = term.trim();
-        if (!cleanTerm) return text;
-        const nText = norm(text);
-        const nTerm = norm(cleanTerm);
-        const start = nText.indexOf(nTerm);
-        if (start === -1) return text;
-        const end = start + nTerm.length;
-        return text.substring(0, start) + '<mark class="hl">' + text.substring(start, end) + '</mark>' + text.substring(end);
-      };
-      const render=(filtro='')=>{
-        const term=norm(filtro).trim();
-        const filtered=window.horariosAtendimento.filter(p=>norm(p.professor).includes(term)||norm(p.materia).includes(term));
+    function copyEmail(email, btn) {
+      navigator.clipboard.writeText(email).then(() => {
+        const original = btn.innerHTML;
+        btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0F9D6A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>';
         
+        const toast = document.createElement('div');
+        toast.className = 'toast-copy';
+        toast.textContent = 'E-mail copiado!';
+        document.body.appendChild(toast);
+        
+        setTimeout(() => {
+          btn.innerHTML = original;
+          toast.style.opacity = '0';
+          setTimeout(() => toast.remove(), 300);
+        }, 2000);
+      }).catch(err => console.error("Erro ao copiar: ", err));
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const tbody = document.getElementById('lista-professores');
+      const searchBar = document.getElementById('searchBar');
+      const searchIndicator = document.getElementById('searchIndicator');
+      const tableCard = document.getElementById('tableCard');
+      const emptyOverlay = document.getElementById('emptyOverlay');
+      const emptyContent = document.getElementById('emptyContent');
+
+      window.horariosAtendimento = window.horariosAtendimento || [
+        { professor: "Alexandre Silva", materia: "Algoritmos e Programação", horario: "Segunda - 14:00", sala: "Lab 03", email: "alexandre.silva@escola.edu.br" },
+        { professor: "Maria Carmo", materia: "Banco de Dados I", horario: "Terça - 10:40", sala: "Sala 12", email: "maria.carmo@escola.edu.br" },
+        { professor: "Carlos Souza", materia: "Fundamentos de Redes", horario: "Quarta - 16:20", sala: "Lab 01", email: "carlos.souza@escola.edu.br" }
+      ];
+
+      const norm = s => s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+
+      const highlight = (text, term) => {
+        if (!term.trim()) return text;
+        const cleanTerm = term.trim().replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+        const regex = new RegExp(`(${cleanTerm})`, 'gi');
+        return text.replace(regex, '<mark class="hl">$1</mark>');
+      };
+
+      const render = (filtro = '') => {
+        const term = norm(filtro).trim();
+        
+        const filtered = window.horariosAtendimento.filter(p => 
+          norm(p.professor).includes(term) || norm(p.materia).includes(term)
+        );
+        
+        // Remove a bolinha de carregamento da barra
+        searchIndicator.classList.remove('active');
+        // Traz o bloco de informações de volta com efeito suave
+        tableCard.classList.remove('searching');
+
         if (filtered.length === 0) {
-          tbody.innerHTML = `<tr><td colspan="5" style="text-align:center !important;padding:64px 20px !important;color:var(--muted);display:table-cell !important;border:none !important;background:transparent !important">
-            <div style="font-size:40px;margin-bottom:16px;filter:grayscale(1);opacity:0.5">🔍</div>
-            <div style="font-weight:700;font-size:16px;color:var(--text);margin-bottom:4px">Nenhum resultado encontrado</div>
-            <div style="font-size:13px;opacity:0.7">Não encontramos nada para "<span style="color:var(--accent)">${filtro.trim()}</span>"</div>
-          </td></tr>`;
+          tbody.innerHTML = '';
+          emptyContent.innerHTML = `<div style="font-size:40px;margin-bottom:12px;opacity:0.5">🔍</div><div style="font-weight:700;font-size:16px;color:var(--text);margin-bottom:6px">Nenhum resultado encontrado</div><div style="font-size:13px;color:var(--muted)">Não encontramos nada para "<span style="color:var(--accent);font-weight:600">${filtro.trim()}</span>"</div>`;
+          emptyOverlay.classList.add('active');
           return;
         }
 
-        tbody.innerHTML=filtered.map((p, i)=>`<tr class="reveal" style="animation-delay:${i*35}ms">
-          <td data-label="Professor"><strong>${highlight(p.professor, filtro)}</strong></td>
-          <td data-label="Matéria">${highlight(p.materia, filtro)}</td>
-          <td data-label="Horário">${p.horario}</td>
-          <td data-label="Sala">${p.sala}</td>
-          <td data-label="E-mail"><div style="display:flex;align-items:center;gap:8px"><a href="mailto:${p.email}" class="email-link">${p.email}</a><button class="copy-btn" onclick="copyEmail('${p.email}',this)" title="Copiar e-mail"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button></div></td>
-        </tr>`).join('');
+        emptyOverlay.classList.remove('active');
+
+        tbody.innerHTML = filtered.map((p, i) => `
+          <tr class="reveal" style="animation-delay:${i * 20}ms">
+            <td data-label="Professor"><strong>${highlight(p.professor, filtro)}</strong></td>
+            <td data-label="Matéria">${highlight(p.materia, filtro)}</td>
+            <td data-label="Horário">${p.horario}</td>
+            <td data-label="Sala">${p.sala}</td>
+            <td data-label="E-mail">
+              <div style="display:flex;align-items:center;gap:8px">
+                <a href="mailto:${p.email}" class="email-link">${p.email}</a>
+                <button class="copy-btn" onclick="copyEmail('${p.email}',this)" title="Copiar e-mail">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                </button>
+              </div>
+            </td>
+          </tr>
+        `).join('');
       };
 
       let searchTimeout;
       render();
 
       searchBar.addEventListener('input', () => {
-        const valor = searchBar.value;
-        
-        // Inicia a animação (bolinha girando)
-        tableArea.style.opacity = '0';
-        loader.style.display = 'flex';
-        
-        // Cancela o timer anterior se o usuário continuar digitando
-        clearTimeout(searchTimeout);
-        
-        // Define um novo timer de 400ms para processar a busca
-        searchTimeout = setTimeout(() => {
-          render(valor);
-          loader.style.display = 'none';
-          tableArea.style.opacity = '1';
-        }, 400);
+        const val = searchBar.value;
+        if (val.trim().length > 0) {
+          // Ativa o spinner na barra e Oculta o bloco de dados inteiramente
+          searchIndicator.classList.add('active');
+          tableCard.classList.add('searching');
+          
+          clearTimeout(searchTimeout);
+          searchTimeout = setTimeout(() => render(val), 350); 
+        } else {
+          clearTimeout(searchTimeout);
+          searchIndicator.classList.remove('active');
+          tableCard.classList.remove('searching');
+          render('');
+        }
       });
     });
   </script>

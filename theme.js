@@ -15,96 +15,100 @@
 
   applyTheme(localStorage.getItem(KEY) === 'dark');
 
-  const sunIcon  = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>';
-  const moonIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
+  const sunIcon  = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>';
+  const moonIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
 
-  function playClick() {
-    try {
-      const ctx  = new (window.AudioContext || window.webkitAudioContext)();
-      const osc  = ctx.createOscillator();
-      const gain = ctx.createGain();
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(1200, ctx.currentTime);
-      osc.frequency.exponentialRampToValueAtTime(600, ctx.currentTime + 0.1);
-      gain.gain.setValueAtTime(0.05, ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.15);
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-      osc.start();
-      osc.stop(ctx.currentTime + 0.15);
-    } catch (_) {}
-  }
-
-  function createToggleButton() {
-    if (document.getElementById('theme-toggle-float')) return;
+  function initSidebarThemeSelector() {
+    const nav = document.querySelector('.sidebar-nav');
+    if (!nav || document.getElementById('theme-selector-item')) return;
 
     const style = document.createElement('style');
     style.textContent = `
-      #theme-toggle-float {
-        position: fixed; top: 14px; right: 18px; z-index: 9999;
-        width: 34px; height: 34px; border-radius: 50%;
-        background: var(--surface, #FDFBF8); border: 1px solid var(--border, #D9D0C3);
-        color: var(--text, #1E1711);
-        display: flex; align-items: center; justify-content: center;
-        cursor: pointer; box-shadow: var(--sh); transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
-        padding: 0; line-height: 0;
+      html[data-theme="dark"] {
+        --bg: #0A0A0A; --surface: #171717; --surface-2: #262626;
+        --border: #333333; --text: #EDEDED; --muted: #A1A1A1;
+        --accent: #F97316; --accent-lt: rgba(255, 255, 255, 0.05);
+        --accent-dk: #EA580C; --green: #22C55E;
+        --green-lt: rgba(16, 185, 129, 0.12); --sh: 0 10px 40px -10px rgba(0, 0, 0, 0.8);
       }
-      #theme-toggle-float span {
-        display: flex; align-items: center; justify-content: center;
-        width: 16px; height: 16px; will-change: transform, opacity;
+      /* Estilização dos links da Sidebar para combinar com o Tema */
+      .sidebar-link { margin: 2px 12px; border-radius: 10px; transition: all 0.2s; }
+      .sidebar-link.active {
+        background: var(--accent) !important;
+        color: #fff !important;
+        box-shadow: 0 4px 12px rgba(249, 115, 22, 0.25);
       }
-      #theme-toggle-float:active { transform: scale(0.9); }
-      .theme-jump { animation: iconJump 0.7s cubic-bezier(0.34,1.56,0.64,1); }
-      @keyframes iconJump {
-        0%   { transform: translateY(0)    rotate(0)      scale(1);   }
-        50%  { transform: translateY(40px) rotate(180deg) scale(1.4); }
-        100% { transform: translateY(0)    rotate(360deg) scale(1);   }
+      .sidebar-link.active svg {
+        stroke: #fff !important;
+      }
+      .theme-section { margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--border); }
+      .theme-label { 
+        padding: 0 16px; margin-bottom: 8px;
+        color: var(--muted); font-size: 11px; font-weight: 700; 
+        text-transform: uppercase; letter-spacing: 0.05em;
+      }
+      .theme-options { 
+        display: flex; gap: 6px; padding: 6px; margin: 0 12px 12px;
+        background: var(--surface-2); border-radius: 12px; border: 1px solid var(--border);
+      }
+      .theme-opt-btn {
+        flex: 1; height: 32px; border-radius: 8px; border: 0;
+        background: transparent; color: var(--muted); font-size: 11px;
+        font-weight: 600; cursor: pointer; transition: all 0.2s;
+        display: flex; align-items: center; justify-content: center; gap: 6px;
+      }
+      .theme-opt-btn:hover { border-color: var(--accent); color: var(--text); }
+      .theme-opt-btn.active { 
+        background: var(--accent); border-color: var(--accent); color: #fff; 
+        box-shadow: 0 4px 12px rgba(249, 115, 22, 0.2);
       }
     `;
     document.head.appendChild(style);
 
-    const btn      = document.createElement('button');
-    btn.id         = 'theme-toggle-float';
-    btn.setAttribute('aria-label', 'Alternar tema claro/escuro');
-    const iconSpan = document.createElement('span');
-    iconSpan.innerHTML = localStorage.getItem(KEY) === 'dark' ? moonIcon : sunIcon;
-    btn.appendChild(iconSpan);
+    const isDark = localStorage.getItem(KEY) === 'dark';
+    const container = document.createElement('div');
+    container.id = 'theme-selector-item';
+    container.className = 'theme-section';
+    container.innerHTML = `
+      <div class="theme-label">Tema</div>
+      <div class="theme-options">
+        <button class="theme-opt-btn ${!isDark ? 'active' : ''}" data-theme-val="light">
+          ${sunIcon} Claro
+        </button>
+        <button class="theme-opt-btn ${isDark ? 'active' : ''}" data-theme-val="dark">
+          ${moonIcon} Escuro
+        </button>
+      </div>
+    `;
 
-    let throttled = false;
-    btn.addEventListener('click', () => {
-      if (throttled) return;
-      throttled = true;
-      setTimeout(() => { throttled = false; }, 900);
+    const buttons = container.querySelectorAll('.theme-opt-btn');
 
-      const isDark   = document.documentElement.getAttribute(ATTR) === 'dark';
-      const newTheme = isDark ? 'light' : 'dark';
-
-      playClick();
-      applyTheme(newTheme === 'dark');
-      localStorage.setItem(KEY, newTheme);
-
-      iconSpan.classList.remove('theme-jump');
-      void iconSpan.offsetWidth;
-      iconSpan.classList.add('theme-jump');
-
-      setTimeout(() => {
-        iconSpan.innerHTML = newTheme === 'dark' ? moonIcon : sunIcon;
-      }, 350);
+    buttons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const val = btn.dataset.themeVal;
+        applyTheme(val === 'dark');
+        localStorage.setItem(KEY, val);
+        
+        buttons.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+      });
     });
 
-    document.body.appendChild(btn);
+    nav.appendChild(container);
   }
 
   window.addEventListener('storage', (e) => {
     if (e.key !== KEY) return;
     applyTheme(e.newValue === 'dark');
-    const btn = document.getElementById('theme-toggle-float');
-    if (btn) btn.querySelector('span').innerHTML = e.newValue === 'dark' ? moonIcon : sunIcon;
+    const buttons = document.querySelectorAll('.theme-opt-btn');
+    buttons.forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.themeVal === e.newValue);
+    });
   });
 
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', createToggleButton);
+    document.addEventListener('DOMContentLoaded', initSidebarThemeSelector);
   } else {
-    createToggleButton();
+    initSidebarThemeSelector();
   }
 })();

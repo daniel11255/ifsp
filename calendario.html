@@ -842,6 +842,26 @@
       const mainView = $('#editor-main-view');
       if (mainView) mainView.hidden = !show;
     }
+    function isEditorDirty() {
+      const mainView = $('#editor-main-view');
+      if (!mainView || mainView.hidden) return false;
+      const id = $('#event-id').value;
+      const title = $('#event-title').value.trim();
+      const desc = $('#event-description').value.trim();
+      const hasLinks = $$('#links-list .link-row').length > 0;
+      const hasFiles = pendingAttachments.length > 0;
+      return !!id || !!title || !!desc || hasLinks || hasFiles;
+    }
+    function clearEditor() {
+      $('#event-id').value = '';
+      $('#event-form').reset();
+      $('#links-list').innerHTML = '';
+      pendingAttachments = [];
+      renderAttachments();
+      $('#link-creator-box').hidden = true;
+      $('#add-link').hidden = false;
+      showEditorView(false);
+    }
     function startNewEvent(dateKey = selectedDate, category = null){
       if (!category) {
         showCategorySelector(dateKey);
@@ -955,6 +975,7 @@
       currentMonth = new Date(parseDateKey(calendarEvent.date).getFullYear(), parseDateKey(calendarEvent.date).getMonth(), 1);
       renderAll();
       showLoading(false);
+      clearEditor();
       switchTab('calendar');
       showToast('Evento salvo.');
     }
@@ -973,12 +994,20 @@
     }
     $('#prev-month').addEventListener('click',()=>{currentMonth.setMonth(currentMonth.getMonth()-1);renderCalendar();});
     $('#next-month').addEventListener('click',()=>{currentMonth.setMonth(currentMonth.getMonth()+1);renderCalendar();});
-    $$('.tab-btn').forEach((button)=>button.addEventListener('click',()=>{
-      const tab = button.dataset.tab;
-      switchTab(tab);
+    $$('.tab-btn').forEach((button)=>button.addEventListener('click', async ()=>{
+      const targetTab = button.dataset.tab;
+      const activeBtn = $('.tab-btn.active');
+      const currentTab = activeBtn ? activeBtn.dataset.tab : null;
+
+      if (currentTab === 'editor' && targetTab !== 'editor' && isEditorDirty()) {
+        const confirmed = await confirmAction('Sair sem salvar?', 'Existem alterações não salvas no evento. Deseja realmente sair?');
+        if (!confirmed) return;
+        clearEditor();
+      }
+
+      switchTab(targetTab);
       
-      // Se clicar em "Novo Registro" e não estiver editando nada, abre as categorias direto
-      if(tab === 'editor' && !$('#event-id').value) {
+      if(targetTab === 'editor' && !$('#event-id').value) {
         showCategorySelector(selectedDate);
       }
     }));

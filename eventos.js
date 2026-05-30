@@ -31,7 +31,7 @@ window.sabadosLetivos = {
 // ── CATEGORIAS DO CALENDÁRIO ──────────────────────────────────
 window.portalCalendarCategories = {
   evento:         { label: 'Evento',         color: 'var(--accent)', soft: 'var(--accent-lt)' },
-  'sabado-letivo':{ label: 'Sábado letivo',  color: '#2D7A50', soft: '#D4EDE0' }
+  'sabado-letivo':{ label: 'Sábado letivo',  color: '#10B981', soft: 'var(--green-lt)' }
 };
 
 // ── EVENTOS PADRÃO ────────────────────────────────────────────

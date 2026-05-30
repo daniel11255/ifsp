@@ -22,25 +22,30 @@
       width: 110px; height: 110px;
       border: 30px solid rgba(255,255,255,.07); border-radius: 50%;
     }
-    html[data-theme="dark"] .clock-block { background: linear-gradient(135deg,#5A3020 0%,#3A1C0C 100%); }
+    html[data-theme="dark"] .clock-block { 
+      background: linear-gradient(135deg, #262626 0%, #0A0A0A 100%); 
+      border: 1px solid var(--border);
+      box-shadow: none;
+    }
     .clock-time    { font-family: var(--mono); font-size: 38px; font-weight: 500; letter-spacing: -.03em; line-height: 1; }
     .clock-secs    { font-family: var(--mono); font-size: 20px; font-weight: 400; opacity: .55; vertical-align: super; }
     .clock-weekday { font-size: 11px; font-weight: 700; opacity: .7; margin-top: 8px; text-transform: uppercase; letter-spacing: .1em; }
     .clock-date    { font-family: var(--mono); font-size: 11px; opacity: .55; margin-top: 3px; }
 
     /* SCHEDULE CARD */
-    .schedule-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--sh); margin-bottom: 20px; overflow: hidden; }
-    .schedule-header { padding: 16px 22px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .schedule-card { background: var(--surface); border: 1px solid var(--border); border-top: 4px solid var(--accent); border-radius: var(--radius); box-shadow: 0 12px 30px -10px rgba(0,0,0,0.1); margin-bottom: 24px; overflow: hidden; transition: transform 0.2s ease, box-shadow 0.2s ease; }
+    .schedule-card:hover { transform: translateY(-2px); box-shadow: 0 16px 40px -12px rgba(0,0,0,0.15); }
+    .schedule-header { padding: 20px 24px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; gap: 12px; background: var(--surface-2); }
     .schedule-header-left { display: flex; align-items: center; gap: 10px; }
-    .schedule-eyebrow { font-family: var(--mono); font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .12em; color: var(--muted); }
-    .schedule-today-badge { font-family: var(--mono); font-size: 10px; font-weight: 600; background: var(--accent-lt); color: var(--accent); border: 1px solid var(--border); padding: 4px 10px; border-radius: 20px; white-space: nowrap; }
+    .schedule-eyebrow { font-family: var(--mono); font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: .12em; color: var(--accent); }
+    .schedule-today-badge { font-family: var(--mono); font-size: 10px; font-weight: 700; background: var(--accent); color: #fff; padding: 4px 12px; border-radius: 20px; white-space: nowrap; }
     .schedule-count { font-family: var(--mono); font-size: 11px; color: var(--muted); }
-    .sched-row { display: grid; grid-template-columns: 148px 1fr auto; align-items: center; gap: 16px; padding: 15px 22px; border-bottom: 1px solid var(--border); position: relative; transition: background .15s; }
+    .sched-row { display: grid; grid-template-columns: 148px 1fr auto; align-items: center; gap: 16px; padding: 18px 24px; border-bottom: 1px solid var(--border); position: relative; transition: background .15s; }
     .sched-row:last-child { border-bottom: none; }
     .sched-row.live  { background: linear-gradient(90deg,rgba(40,120,80,.06) 0%,transparent 55%); }
     .sched-row.live::before, .sched-row.next-up::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; border-radius: 0 2px 2px 0; }
     .sched-row.live::before    { background: var(--green); }
-    .sched-row.next-up::before { background: var(--accent); }
+    .sched-row.next-up::before { background: var(--accent); opacity: 0.8; }
     .sched-row.done { opacity: .42; }
     .class-progress-bar { position: absolute; bottom: 0; left: 0; height: 2px; background: var(--green); transition: width 1s linear; opacity: 0.6; }
     .sched-time { font-family: var(--mono); font-size: 12px; font-weight: 500; color: var(--muted); white-space: nowrap; }
@@ -64,8 +69,8 @@
     .feature-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--sh); text-decoration: none; color: inherit; padding: 24px; display: flex; flex-direction: column; height: 100%; }
     .card-icon { width: 48px; height: 48px; border-radius: 12px; flex-shrink: 0; background: var(--accent-lt); display: flex; align-items: center; justify-content: center; border: 1px solid rgba(var(--accent-rgb), 0.1); margin-bottom: 16px; }
     .card-icon svg { width: 24px; height: 24px; fill: none; stroke: var(--accent); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-    .card-bus      .card-icon { background: var(--green-lt);  border-color: rgba(40,120,80,0.1); }
-    .card-bus      .card-icon svg { stroke: var(--green); }
+    .card-bus      .card-icon { background: var(--surface-2);  border-color: var(--border); }
+    .card-bus      .card-icon svg { stroke: var(--text); }
     .card-profs    .card-icon { background: var(--amber-lt);  border-color: rgba(198,140,26,0.1); }
     .card-profs    .card-icon svg { stroke: var(--amber); }
     .card-calendar .card-icon { background: #DBEAFE; border-color: rgba(37,99,235,0.1); }
@@ -76,7 +81,7 @@
     .card-cta   { margin-top: auto; font-family: var(--mono); font-size: 10px; font-weight: 700; color: var(--accent); letter-spacing: .06em; text-transform: uppercase; display: inline-flex; align-items: center; gap: 6px; padding-top: 12px; border-top: 1px solid var(--border); }
     .card-cta svg { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; transition: transform .2s; }
     .feature-card:hover .card-cta svg { transform: translateX(5px); }
-    .card-bus      .card-cta { color: var(--green); }
+    .card-bus      .card-cta { color: var(--text); }
     .card-profs    .card-cta { color: var(--amber); }
     .card-calendar .card-cta { color: #2563EB; }
 
@@ -141,6 +146,11 @@
     <div class="schedule-card">
       <div class="schedule-header">
         <div class="schedule-header-left">
+          <div style="width: 32px; height: 32px; background: var(--accent-lt); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: var(--accent);">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line>
+            </svg>
+          </div>
           <span class="schedule-eyebrow">Próximas Aulas</span>
           <span class="schedule-today-badge" id="schedule-day-badge">---</span>
         </div>
@@ -155,7 +165,6 @@
         <div class="card-icon"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
         <div class="card-body">
           <div class="card-title">Grade de Aulas</div>
-          <div class="card-desc">Horário semanal completo com destaque automático para o dia e horário atual.</div>
           <div class="card-cta">Ver grade <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
         </div>
       </a>
@@ -163,7 +172,6 @@
         <div class="card-icon"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><path d="M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01"/></svg></div>
         <div class="card-body">
           <div class="card-title">Calendário</div>
-          <div class="card-desc">Eventos da turma com provas, atividades, sábados letivos, links e anexos.</div>
           <div class="card-cta">Abrir calendário <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
         </div>
       </a>
@@ -171,7 +179,6 @@
         <div class="card-icon"><svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/><path d="M7 8h10M7 11h5"/></svg></div>
         <div class="card-body">
           <div class="card-title">Horários de Ônibus</div>
-          <div id="bus-card-desc" class="card-desc">Terminal ↔ Shopping — próximas saídas (Segunda a Sexta).</div>
           <div class="card-cta">Ver horários <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
         </div>
       </a>
@@ -179,14 +186,13 @@
         <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-8 0v2"/><circle cx="12" cy="7" r="4"/></svg></div>
         <div class="card-body">
           <div class="card-title">Atendimento de Professores</div>
-          <div class="card-desc">Horários e e-mails de todos os professores disponíveis para dúvidas.</div>
           <div class="card-cta">Ver professores <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
         </div>
       </a>
     </div>
   </div>
 
-  <footer>// Portal 1INFO-2</footer>
+  <footer></footer>
 
   <script src="eventos.js"></script>
   <script>
@@ -209,18 +215,15 @@
     }
 
     function getEffectiveDow(now) {
-      const dow = now.getDay();
-      if (dow === 6) {
-        const key = toDateKey(now);
-        if (window.sabadosLetivos && window.sabadosLetivos[key]) return window.sabadosLetivos[key];
-      }
-      return dow;
+      return now.getDay();
     }
 
-    function findNextSchoolDay(fromDow) {
+    function findNextSchoolDay(fromDate) {
+      const d = new Date(fromDate);
       for (let i = 1; i <= 7; i++) {
-        const next = (fromDow + i) % 7;
-        if (SCHEDULE[next] && SCHEDULE[next].length > 0) return next;
+        d.setDate(d.getDate() + 1);
+        const dow = d.getDay();
+        if (SCHEDULE[dow] && SCHEDULE[dow].length > 0) return { dow: dow, date: new Date(d) };
       }
       return null;
     }
@@ -228,22 +231,36 @@
     function renderSchedule() {
       const n    = new Date();
       const mins = n.getHours() * 60 + n.getMinutes();
-      const effectiveDow = getEffectiveDow(n);
-      const realDow      = n.getDay();
+      const dow  = n.getDay();
 
-      let displayDow  = effectiveDow;
-      let dayClasses  = SCHEDULE[displayDow] || [];
-      let isFutureDay = false;
+      let displayDow, dayClasses, isFutureDay;
 
-      const allDone = dayClasses.length > 0 && mins >= toMins(dayClasses[dayClasses.length - 1].end);
-      if (dayClasses.length === 0 || allDone) {
-        const next = findNextSchoolDay(effectiveDow);
-        if (next !== null) { displayDow = next; dayClasses = SCHEDULE[next]; isFutureDay = true; }
+      // 1. Verificar se hoje ainda tem aulas
+      const todayClasses = SCHEDULE[dow] || [];
+      const todayDone = todayClasses.length > 0 && mins >= toMins(todayClasses[todayClasses.length - 1].end);
+
+      if (todayClasses.length > 0 && !todayDone) {
+        // Ainda há aulas hoje
+        displayDow = dow;
+        dayClasses = todayClasses;
+        isFutureDay = false;
+      } else {
+        // Hoje não tem aula ou já acabaram. Procurar o próximo dia letivo.
+        const next = findNextSchoolDay(n);
+        if (next) {
+          displayDow = next.dow;
+          dayClasses = SCHEDULE[displayDow];
+          isFutureDay = true;
+        } else {
+          displayDow = dow;
+          dayClasses = [];
+          isFutureDay = false;
+        }
       }
 
-      const badgeText = isFutureDay
+      const badgeText = isFutureDay 
         ? (displayDow === 1 ? 'Segunda-feira' : DAYS_PT[displayDow])
-        : (effectiveDow !== realDow ? DAYS_PT[effectiveDow] + ' (Sáb. Letivo)' : DAYS_PT[realDow]);
+        : DAYS_PT[dow];
 
       document.getElementById('schedule-day-badge').textContent = badgeText;
 
@@ -272,25 +289,10 @@
       }).join('');
     }
 
-    function updateBusCard() {
-      const dow = new Date().getDay();
-      const isWeekend = (dow === 0 || dow === 6);
-      const desc = document.getElementById('bus-card-desc');
-      const card = desc.closest('.feature-card');
-      if (isWeekend) {
-        desc.innerHTML = '<strong style="color:var(--accent)">Indisponível hoje</strong> — a linha opera apenas em dias úteis.';
-        card.style.opacity = '0.75';
-      } else {
-        desc.textContent = 'Terminal ↔ Shopping — próximas saídas (Segunda a Sexta).';
-        card.style.opacity = '1';
-      }
-    }
-
     tickClock();
     renderSchedule();
-    updateBusCard();
     setInterval(tickClock, 1000);
-    setInterval(() => { renderSchedule(); updateBusCard(); }, 15000);
+    setInterval(() => { renderSchedule(); }, 15000);
   </script>
 </body>
 </html>

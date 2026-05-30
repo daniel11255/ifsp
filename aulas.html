@@ -45,17 +45,18 @@
     .s-efi{background:#FFE4E6;color:#881337}.s-iwb{background:#E0E7FF;color:#312E81}
     .s-mat{background:#FCE7F3;color:#831843}.s-fis{background:#E0F2FE;color:#0C4A6E}
     .s-fil{background:#FEF9C3;color:#713F12}
-    html[data-theme="dark"] .s-art{background:#3D200A;color:#F97316}
-    html[data-theme="dark"] .s-incp{background:#0D1A40;color:#60A5FA}
-    html[data-theme="dark"] .s-lpr{background:#04201A;color:#34D399}
-    html[data-theme="dark"] .s-prog{background:#1E0D40;color:#C084FC}
-    html[data-theme="dark"] .s-geo{background:#042018;color:#2DD4BF}
-    html[data-theme="dark"] .s-ing{background:#261C04;color:#FCD34D}
-    html[data-theme="dark"] .s-efi{background:#2A0A10;color:#FDA4AF}
-    html[data-theme="dark"] .s-iwb{background:#0D1040;color:#A5B4FC}
-    html[data-theme="dark"] .s-mat{background:#2A0418;color:#F472B6}
-    html[data-theme="dark"] .s-fis{background:#021828;color:#38BDF8}
-    html[data-theme="dark"] .s-fil{background:#221A04;color:#FDE047}
+    html[data-theme="dark"] .subj-pill { background: #262626; border: 1px solid var(--border); }
+    html[data-theme="dark"] .s-art{color:#F97316}
+    html[data-theme="dark"] .s-incp{color:#60A5FA}
+    html[data-theme="dark"] .s-lpr{color:#34D399}
+    html[data-theme="dark"] .s-prog{color:#C084FC}
+    html[data-theme="dark"] .s-geo{color:#2DD4BF}
+    html[data-theme="dark"] .s-ing{color:#FCD34D}
+    html[data-theme="dark"] .s-efi{color:#FDA4AF}
+    html[data-theme="dark"] .s-iwb{color:#A5B4FC}
+    html[data-theme="dark"] .s-mat{color:#F472B6}
+    html[data-theme="dark"] .s-fis{color:#38BDF8}
+    html[data-theme="dark"] .s-fil{color:#FDE047}
     html[data-theme="dark"] th{background:var(--accent-lt);color:var(--accent-dk)}
     html[data-theme="dark"] th.today-col{background:var(--accent);color:#fff}
     html[data-theme="dark"] td.today-col{background:rgba(208,120,72,.06)}
@@ -104,9 +105,6 @@
     </div>
     <div id="legend" class="legend"></div>
     <div class="schedule-card">
-      <div class="card-toolbar">
-        <button class="btn btn-primary" id="export-pdf">⬇ Exportar PDF</button>
-      </div>
       <div class="table-wrap">
         <table>
           <thead>
@@ -173,8 +171,7 @@
       </div>
     </div>
   </main>
-  <footer>// Portal 1INFO-2</footer>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <footer></footer>
   <script>
     const SUBJECTS={'ARQART1':{name:'Artes',cls:'s-art',dot:'#F97316'},'ARQINCP':{name:'Intro. Computação',cls:'s-incp',dot:'#3B82F6'},'ARQLPR1':{name:'Língua Portuguesa',cls:'s-lpr',dot:'#10B981'},'ARQPROG':{name:'Programação',cls:'s-prog',dot:'#8B5CF6'},'ARQGEO1':{name:'Geografia',cls:'s-geo',dot:'#14B8A6'},'ARQING1':{name:'Inglês',cls:'s-ing',dot:'#F59E0B'},'ARQEFI1':{name:'Ed. Física',cls:'s-efi',dot:'#F43F5E'},'ARQIWB1':{name:'Interfaces Web',cls:'s-iwb',dot:'#6366F1'},'ARQMAT1':{name:'Matemática',cls:'s-mat',dot:'#EC4899'},'ARQFIS1':{name:'Física',cls:'s-fis',dot:'#0EA5E9'},'ARQFIL1':{name:'Filosofia',cls:'s-fil',dot:'#84CC16'}};
     const SCHEDULE_AULAS={1:[{start:'12:35',end:'14:15',code:'ARQART1'},{start:'14:25',end:'16:05',code:'ARQGEO1'},{start:'16:20',end:'18:00',code:'ARQMAT1'}],2:[{start:'12:35',end:'14:15',code:'ARQINCP'},{start:'14:25',end:'16:05',code:'ARQING1'},{start:'16:20',end:'18:00',code:'ARQFIS1'}],3:[{start:'14:25',end:'16:05',code:'ARQEFI1'},{start:'16:20',end:'18:00',code:'ARQFIL1'}],4:[{start:'12:35',end:'14:15',code:'ARQLPR1'},{start:'14:25',end:'16:05',code:'ARQIWB1'}],5:[{start:'12:35',end:'16:05',code:'ARQPROG'},{start:'16:20',end:'18:00',code:'ARQMAT1'}]};
@@ -221,76 +218,6 @@
     updateBanner(); setInterval(updateBanner, 30000);
     const legend=document.getElementById('legend'),seen=new Set();
     document.querySelectorAll('.subj-pill[data-code]').forEach(el=>{const code=el.dataset.code;if(!seen.has(code)&&SUBJECTS[code]){seen.add(code);const meta=SUBJECTS[code];const chip=document.createElement('div');chip.className='legend-chip '+meta.cls;chip.innerHTML=`<span class="legend-dot" style="background:${meta.dot}"></span>${meta.name}`;legend.appendChild(chip);}});
-    document.getElementById('export-pdf').addEventListener('click', async function () {
-      const btn = this;
-      const originalText = btn.textContent;
-
-      btn.disabled = true;
-      btn.textContent = '⏳ Processando...';
-
-      // 1. Construir um container HTML limpo para o PDF
-      const pdfContainer = document.createElement('div');
-      pdfContainer.style.padding = '20px';
-      pdfContainer.style.backgroundColor = '#ffffff';
-      pdfContainer.style.color = '#333333';
-      pdfContainer.style.fontFamily = 'Arial, sans-serif';
-
-      // 2. Adicionar Cabeçalho
-      let content = `<h1 style="text-align:center; color:#B85C2A; margin-bottom:20px;">Grade de Horários - 1INFO-2</h1>`;
-
-      // 3. Criar a Tabela (Simples e Compatível)
-      content += `<table border="1" style="width:100%; border-collapse:collapse; text-align:center; font-size:12px;">`;
-      
-      // Headers
-      content += `<tr style="background-color:#F4E2D2; color:#8C401C;">
-        <th style="padding:10px; border:1px solid #D9D0C3;">Horário</th>
-        <th style="padding:10px; border:1px solid #D9D0C3;">Segunda</th>
-        <th style="padding:10px; border:1px solid #D9D0C3;">Terça</th>
-        <th style="padding:10px; border:1px solid #D9D0C3;">Quarta</th>
-        <th style="padding:10px; border:1px solid #D9D0C3;">Quinta</th>
-        <th style="padding:10px; border:1px solid #D9D0C3;">Sexta</th>
-      </tr>`;
-
-      // Linhas da Tabela
-      document.querySelectorAll('tbody tr').forEach(row => {
-        content += `<tr>`;
-        row.querySelectorAll('td').forEach((td, index) => {
-          const pill = td.querySelector('.subj-pill');
-          let text = td.innerText.trim();
-          let bgColor = index === 0 ? '#ECE7DC' : '#ffffff';
-          let textColor = '#333333';
-          
-          if (pill && pill.dataset.code && SUBJECTS[pill.dataset.code]) {
-            bgColor = SUBJECTS[pill.dataset.code].dot + '22'; // 22 adiciona transparência (estilo pastel)
-            textColor = SUBJECTS[pill.dataset.code].dot;
-          }
-          content += `<td style="padding:8px; border:1px solid #D9D0C3; background-color:${bgColor}; color:${textColor}; font-weight:${index===0?'bold':'normal'};">${text}</td>`;
-        });
-        content += `</tr>`;
-      });
-
-      content += `</table>`;
-      pdfContainer.innerHTML = content;
-
-      // 4. Configurações do html2pdf
-      const opt = {
-        margin: [10, 10],
-        filename: 'grade-horaria-1INFO2.pdf',
-        image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 2, useCORS: true, logging: false, windowWidth: 1040 }, // Define uma largura fixa para a renderização, evitando cortes em telas menores
-        jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' }
-      };
-
-      try {
-        await html2pdf().set(opt).from(pdfContainer).save();
-      } catch (err) {
-        console.error("Erro ao gerar PDF:", err);
-        alert("Erro ao gerar o PDF. Tente novamente.");
-      } finally {
-        btn.disabled = false;
-        btn.textContent = originalText;
-      }
-    });
 
     document.addEventListener('visibilitychange', () => {
       if (document.visibilityState === 'visible') updateBanner();

@@ -133,6 +133,19 @@
       background: rgba(30,23,17,0.4); backdrop-filter: blur(4px);
       display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px;
     }
+    /* Barra de Filtro (Select) */
+    .search-wrapper{position:relative;width:100%;margin-bottom:24px}
+    #calendarSubjectFilter{appearance:none;padding:12px 40px 12px 16px;border:1px solid var(--border);border-radius:12px;background:var(--surface) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") no-repeat right 16px center;color:var(--text);font-family:var(--sans);font-size:14px;width:100%;transition:all .2s;box-shadow:var(--sh);cursor:pointer}
+    #calendarSubjectFilter:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(15,118,110,.1)}
+
+    /* Painel de Resultados do Filtro */
+    .filtered-results-area { background: var(--surface); border: 2px solid var(--accent); border-radius: 18px; margin-bottom: 20px; padding: 20px; box-shadow: var(--sh-hover); animation: reveal 0.3s ease; }
+    .filtered-results-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
+    .filtered-results-title { font-size: 16px; font-weight: 800; display: flex; align-items: center; gap: 8px; }
+    .filtered-results-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; }
+    .filtered-item { background: var(--surface-2); border: 1px solid var(--border); border-radius: 12px; padding: 12px; transition: transform 0.2s; cursor: pointer; }
+    .filtered-item:hover { transform: translateY(-2px); border-color: var(--accent); background: var(--surface); }
+
     .spinner {
       width: 40px; height: 40px; border: 4px solid var(--border);
       border-top-color: var(--accent); border-radius: 50%;
@@ -378,7 +391,29 @@
       </button>
     </div>
 
+    <!-- Barra de Pesquisa -->
+    <div class="search-wrapper" id="search-container">
+      <select id="calendarSubjectFilter" aria-label="Filtrar eventos por matéria">
+        <option value="">Exibir todas as matérias</option>
+        <option value="Artes">Artes</option>
+        <option value="Educação Física">Educação Física</option>
+        <option value="Filosofia">Filosofia</option>
+        <option value="Física">Física</option>
+        <option value="Geografia">Geografia</option>
+        <option value="Inglês">Inglês</option>
+        <option value="Interfaces Web">Interfaces Web</option>
+        <option value="Introdução à Computação">Introdução à Computação</option>
+        <option value="Língua Portuguesa">Língua Portuguesa</option>
+        <option value="Matemática">Matemática</option>
+        <option value="Programação">Programação</option>
+        <option value="sabado-letivo">Sábado Letivo</option>
+      </select>
+    </div>
+
     <section class="tab-panel active" id="panel-calendar" role="tabpanel">
+      <!-- Painel de Resultados de Filtro (Sub-aba) -->
+      <div id="filtered-results-view" class="filtered-results-area" hidden></div>
+
       <div class="calendar-layout">
         <section class="calendar-card" aria-label="Calendário mensal">
           <div class="calendar-toolbar">
@@ -522,6 +557,8 @@
     let currentMonth = new Date(today.getFullYear(), today.getMonth(), 1);
     let selectedDate = toDateKey(today);
     let pendingAttachments = [];
+    const norm = s => s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+    let currentFilter = '';
 
     const $ = (selector) => document.querySelector(selector);
     const $$ = (selector) => [...document.querySelectorAll(selector)];
@@ -545,7 +582,9 @@
       return window.saveStoredCalendarEvents(events) !== false;
     }
     function getEvents(){return window.getPortalCalendarEvents ? window.getPortalCalendarEvents() : [];}
-    function eventsForDate(dateKey){return getEvents().filter((event)=>event.date===dateKey);}
+    function eventsForDate(dateKey){
+      return getEvents().filter((event)=>event.date===dateKey);
+    }
     function categoryMeta(key){return categories[key] || categories['evento'];}
 
     function confirmAction(title, message) {
@@ -587,10 +626,11 @@
       // Atualiza "Próximo evento" e habilita o botão de detalhes (se houver evento)
       // (o botão é adicionado no HTML abaixo).
       const events = getEvents();
+      const filteredEvents = events; // Mantém o próximo evento global
       const now = new Date();
       const todayKey = toDateKey(now);
       const nowMins = now.getHours() * 60 + now.getMinutes();
-      const upcoming = events.find((event)=>{
+      const upcoming = filteredEvents.find((event)=>{
         if (!event.date) return false;
         if (event.date > todayKey) return true;
         if (event.date < todayKey) return false;
@@ -669,7 +709,6 @@
     function closeDayPanel(){
       $('#day-panel').hidden = true;
       document.body.style.overflow = '';
-      selectedDate = toDateKey(today);
       renderCalendar();
     }
     function renderDayPanel(){
@@ -710,7 +749,7 @@
       return linkHtml || fileHtml ? `<div class="resource-list">${linkHtml}${fileHtml}</div>` : '';
     }
     function renderEventsList(){
-      const events = getEvents();
+      let events = getEvents();
       $('#events-list').innerHTML = events.length ? events.map((event)=>`
         <article class="event-row fade-in">
           <div class="event-row-top">
@@ -773,12 +812,22 @@
       const nextCard = $('#next-event-card');
       if (nextCard) nextCard.hidden = (name !== 'calendar');
 
-      // Oculta o título da página se não estiver na aba de calendário
+      // Oculta o título da página e a barra de pesquisa se não estiver na aba de calendário
       const titleContainer = $('#page-title-container');
       if (titleContainer) titleContainer.hidden = (name !== 'calendar');
 
+      const searchContainer = $('#search-container');
+      if (searchContainer) searchContainer.hidden = (name !== 'calendar');
+
+      if (name !== 'calendar') {
+        $('#filtered-results-view').hidden = true;
+        $('#calendarSubjectFilter').value = '';
+      }
+
       if (name === 'manage') renderEventsList();
+      if (name === 'calendar') renderCalendar();
     }
+
     function addLinkRow(link = {label:'',url:''}){
       if (!link.url) return;
       const row = document.createElement('div');
@@ -994,6 +1043,59 @@
     }
     $('#prev-month').addEventListener('click',()=>{currentMonth.setMonth(currentMonth.getMonth()-1);renderCalendar();});
     $('#next-month').addEventListener('click',()=>{currentMonth.setMonth(currentMonth.getMonth()+1);renderCalendar();});
+    
+    window.jumpToDate = (dateKey) => {
+      selectedDate = dateKey;
+      const d = parseDateKey(dateKey);
+      currentMonth = new Date(d.getFullYear(), d.getMonth(), 1);
+      renderCalendar();
+      renderDayPanel();
+      openDayPanel();
+    };
+
+    function renderFilteredView(subject) {
+      const view = $('#filtered-results-view');
+      if (!subject) {
+        view.hidden = true;
+        return;
+      }
+
+      const allEvents = getEvents();
+      const filtered = allEvents.filter(e => eventSubject(e) === subject || e.category === subject);
+      const displayLabel = subject === 'sabado-letivo' ? 'Sábados Letivos' : subject;
+
+      view.hidden = false;
+      view.innerHTML = `
+        <div class="filtered-results-header">
+          <div class="filtered-results-title">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+            ${displayLabel} (${filtered.length})
+          </div>
+          <button class="icon-btn" onclick="clearFilter()" title="Fechar filtro"><svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+        </div>
+        <div class="filtered-results-grid">
+          ${filtered.length ? filtered.map(e => `
+            <div class="filtered-item" onclick="jumpToDate('${e.date}')">
+              ${categoryBadge(e.category)}
+              <div style="font-size: 11px; font-weight: 700; color: var(--accent); margin-bottom: 4px;">${formatDateShort(e.date)}</div>
+              <div style="font-weight: 800; font-size: 13px; line-height: 1.2;">${escapeHtml(e.title)}</div>
+              <div style="font-size: 11px; color: var(--muted); margin-top: 6px;">${escapeHtml(e.horario || 'Horário não definido')}</div>
+              <div style="margin-top: 8px; pointer-events: none;">${renderResources(e)}</div>
+            </div>
+          `).join('') : '<div class="empty" style="grid-column: 1/-1">Nenhum evento encontrado para esta matéria.</div>'}
+        </div>
+      `;
+    }
+
+    window.clearFilter = () => {
+      $('#calendarSubjectFilter').value = '';
+      $('#filtered-results-view').hidden = true;
+    };
+
+    $('#calendarSubjectFilter').addEventListener('change', (e) => {
+      renderFilteredView(e.target.value);
+    });
+
     $$('.tab-btn').forEach((button)=>button.addEventListener('click', async ()=>{
       const targetTab = button.dataset.tab;
       const activeBtn = $('.tab-btn.active');
@@ -1003,6 +1105,11 @@
         const confirmed = await confirmAction('Sair sem salvar?', 'Existem alterações não salvas no evento. Deseja realmente sair?');
         if (!confirmed) return;
         clearEditor();
+      }
+
+      if (targetTab === 'editor') {
+        currentFilter = '';
+        $('#calendarSubjectFilter').value = '';
       }
 
       switchTab(targetTab);

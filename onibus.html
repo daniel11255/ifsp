@@ -142,6 +142,7 @@
     const PERIODS=[{label:'Manhã',min:0,max:11*60+59},{label:'Tarde',min:12*60,max:17*60+59},{label:'Noite',min:18*60,max:24*60}];
     const TAG_CLASSES={'JL':'jl','FC VOLVO':'fcv','FC':'fc'};
     const DOM={go:{panel:document.getElementById('panel-go'),time:document.getElementById('smart-time-go'),count:document.getElementById('smart-count-go')},ret:{panel:document.getElementById('panel-ret'),time:document.getElementById('smart-time-ret'),count:document.getElementById('smart-count-ret')}};
+
     function fmtCountdown(mins){if(mins<1)return'agora';if(mins<60)return`em ${mins} min`;const h=Math.floor(mins/60),m=mins%60;return m===0?`em ${h}h`:`em ${h}h ${m}min`;}
     function renderPanel(dir,nowMins,nextBus){
       let html='';

@@ -398,6 +398,7 @@
 
       const norm = s => s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
 
+
       const highlight = (text, term) => {
         if (!term.trim()) return text;
         const cleanTerm = term.trim().replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');

@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ônibus — Portal 1INFO-2</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@400;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="shared.css">
+  <style>
+    main{max-width:980px;margin:0 auto;padding:28px 20px 60px;}
+    .smart-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px}
+    .smart-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--sh);padding:20px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+    .smart-card.going{border-left:4px solid var(--accent)}
+    .smart-card.returning{border-left:4px solid var(--green)}
+    .smart-label{font-family:var(--mono);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);display:flex;align-items:center;gap:6px;margin-bottom:5px}
+    .smart-time{font-size:32px;font-weight:800;color:var(--accent);line-height:1;letter-spacing:-.03em}
+    .smart-time.green{color:var(--green)}
+    .countdown{font-family:var(--mono);font-size:11px;color:var(--muted);background:var(--surface-2);border:1px solid var(--border);padding:5px 12px;border-radius:20px;font-weight:500;white-space:nowrap;flex-shrink:0}
+    .status-dot{width:8px;height:8px;border-radius:50%;display:inline-block;flex-shrink:0}
+    .status-dot.go{background:var(--accent)}
+    .status-dot.ret{background:var(--green)}
+    .section-label{font-family:var(--mono);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);margin-bottom:16px}
+    .bus-columns{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+    .bus-panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--sh);overflow:hidden}
+    .bus-panel-header{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px}
+    .panel-icon{width:34px;height:34px;border-radius:9px;background:var(--accent-lt);border:1px solid var(--border);display:flex;align-items:center;justify-content:center}
+    .panel-icon svg{width:17px;height:17px;fill:none;stroke:var(--accent);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+    .panel-icon.green-icon{background:var(--green-lt);border-color:rgba(15,157,106,.2)}
+    .panel-icon.green-icon svg{stroke:var(--green)}
+    .panel-title{font-size:14px;font-weight:700;color:var(--text)}
+    .bus-panel-body{padding:14px 18px 18px}
+    .time-section{margin-bottom:14px}
+    .time-section:last-child{margin-bottom:0}
+    .period-label{font-family:var(--mono);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:var(--muted);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+    .period-label::after{content:'';flex:1;height:1px;background:var(--border)}
+    .times-grid{display:flex;flex-wrap:wrap;gap:6px}
+    .time-pill{display:inline-flex;align-items:center;gap:5px;padding:5px 10px;border-radius:8px;font-family:var(--mono);font-size:12px;font-weight:600;border:1px solid var(--border);background:var(--surface);color:var(--text);position:relative;transition:all .2s ease}
+    .time-pill:hover{border-color:var(--accent);transform:translateY(-2px)}
+    .time-pill.past{opacity:.5;background:var(--surface-2)}
+    .time-pill.next-go{background:var(--accent);border-color:var(--accent);color:#fff;transform:scale(1.06)}
+    .time-pill.next-ret{background:var(--green);border-color:var(--green);color:#fff;transform:scale(1.06)}
+    .pill-tag{font-size:9px;font-weight:700;padding:1px 4px;border-radius:4px;text-transform:uppercase;background:rgba(0,0,0,.08);letter-spacing:.04em}
+    .legend-card{margin-top:24px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;box-shadow:var(--sh)}
+    .legend-heading{font-family:var(--mono);font-size:10px;font-weight:700;text-transform:uppercase;color:var(--muted);margin-bottom:12px;letter-spacing:.1em}
+    .legend-items{display:flex;flex-wrap:wrap;gap:16px}
+    .legend-item{display:flex;align-items:center;gap:10px;font-size:13px;font-weight:500;color:var(--text)}
+    .legend-dot{padding:2px 8px;min-width:32px;border-radius:6px;font-family:var(--mono);font-size:10px;font-weight:700;display:inline-flex;align-items:center;justify-content:center}
+    .legend-dot.jl{background:var(--accent-lt);color:var(--accent);border:1px solid var(--border)}
+    .legend-dot.fc{background:var(--green-lt);color:var(--green);border:1px solid var(--green-lt)}
+    .legend-dot.fcv{background:var(--surface-2);color:var(--text);border:1px solid var(--border)}
+
+    .smart-card:nth-child(1){animation:reveal 0.6s cubic-bezier(0.2,1,0.3,1) both}
+    .smart-card:nth-child(2){animation:reveal 0.6s 0.1s cubic-bezier(0.2,1,0.3,1) both}
+    .bus-panel:nth-child(1){animation:reveal 0.7s 0.2s cubic-bezier(0.2,1,0.3,1) both}
+    .bus-panel:nth-child(2){animation:reveal 0.7s 0.3s cubic-bezier(0.2,1,0.3,1) both}
+    .legend-card{animation:fadeUp 0.6s 0.4s cubic-bezier(0.2,1,0.3,1) both}
+    .reveal-pill{animation:reveal 0.5s cubic-bezier(0.2,1,0.3,1) both}
+    @media(max-width:680px){
+      .topnav{padding:0 16px}main{padding:20px 12px 48px}.smart-row,.bus-columns{grid-template-columns:1fr}.smart-time{font-size:26px}
+    }
+  </style>
+  <script>if(localStorage.getItem('theme')==='dark')document.documentElement.setAttribute('data-theme','dark');</script>
+</head>
+<body>
+  <script src="shared.js"></script>
+  <script src="theme.js" defer></script>
+
+  <aside class="sidebar" id="sidebar">
+    <div class="nav-brand">
+      <div class="nav-logo"><svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></div>
+      <div>
+        <div class="nav-title">Portal</div>
+        <div class="nav-tag" style="margin-top:2px">1INFO-2</div>
+      </div>
+    </div>
+    <nav class="sidebar-nav">
+      <a href="index.html" class="sidebar-link"><svg viewBox="0 0 24 24"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/><polyline points="9 21 9 12 15 12 15 21"/></svg> Portal</a>
+      <a href="aulas.html" class="sidebar-link"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> Grade</a>
+      <a href="calendario.html" class="sidebar-link"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><path d="M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01"/></svg> Calendário</a>
+      <a href="onibus.html" class="sidebar-link active"><svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/><path d="M7 8h10M7 11h5"/></svg> Ônibus</a>
+      <a href="horarios.html" class="sidebar-link"><svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-8 0v2"/><circle cx="12" cy="7" r="4"/></svg> Professores</a>
+    </nav>
+  </aside>
+  <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebar()"></div>
+
+  <nav class="topnav">
+    <button class="menu-btn" onclick="toggleSidebar()"><svg viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a href="index.html" class="nav-brand">
+      <div class="nav-logo"><svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></div>
+      <span class="nav-title">Portal</span>
+      <span class="nav-tag">1INFO-2</span>
+    </a>
+    <div style="width:38px" aria-hidden="true"></div> <!-- Spacer for balance -->
+  </nav>
+  <main>
+    <div class="smart-row">
+      <div class="smart-card going">
+        <div>
+          <div class="smart-label"><span class="status-dot go"></span>Terminal → Shopping</div>
+          <div class="smart-time" id="smart-time-go">--:--</div>
+        </div>
+        <div class="countdown" id="smart-count-go">—</div>
+      </div>
+      <div class="smart-card returning">
+        <div>
+          <div class="smart-label"><span class="status-dot ret"></span>Shopping → Terminal</div>
+          <div class="smart-time green" id="smart-time-ret">--:--</div>
+        </div>
+        <div class="countdown" id="smart-count-ret">—</div>
+      </div>
+    </div>
+    <div class="section-label">// tabela de horários</div>
+    <div class="bus-columns">
+      <div class="bus-panel">
+        <div class="bus-panel-header">
+          <div class="panel-icon"><svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/><path d="M7 8h10M7 11h5"/></svg></div>
+          <div class="panel-title">Terminal → Shopping</div>
+        </div>
+        <div class="bus-panel-body" id="panel-go"></div>
+      </div>
+      <div class="bus-panel">
+        <div class="bus-panel-header">
+          <div class="panel-icon green-icon"><svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/><path d="M7 8h10M12 11h5"/></svg></div>
+          <div class="panel-title">Shopping → Terminal</div>
+        </div>
+        <div class="bus-panel-body" id="panel-ret"></div>
+      </div>
+    </div>
+    <div class="legend-card">
+      <div class="legend-heading">Legenda</div>
+      <div class="legend-items">
+        <div class="legend-item"><div class="legend-dot jl">JL</div>Residencial Lupo</div>
+        <div class="legend-item"><div class="legend-dot fc">FC</div>Fábrica de Cueca</div>
+        <div class="legend-item"><div class="legend-dot fcv">VOLVO</div>FC com veículo Volvo</div>
+      </div>
+    </div>
+  </main>
+  <footer>// Portal 1INFO-2</footer>
+  <script>
+    const BUSES={go:[{t:'05:34',tag:'JL'},{t:'05:59',tag:'JL'},{t:'06:24',tag:'FC VOLVO'},{t:'06:49',tag:'JL'},{t:'07:14',tag:'JL'},{t:'07:44',tag:'JL'},{t:'08:19',tag:'JL'},{t:'08:39',tag:'JL'},{t:'08:59',tag:null},{t:'09:31',tag:null},{t:'10:03',tag:null},{t:'10:34',tag:null},{t:'11:06',tag:null},{t:'11:38',tag:null},{t:'12:10',tag:null},{t:'12:42',tag:null},{t:'13:14',tag:null},{t:'13:46',tag:null},{t:'14:18',tag:null},{t:'14:50',tag:null},{t:'15:22',tag:null},{t:'15:54',tag:null},{t:'16:27',tag:null},{t:'17:17',tag:null},{t:'17:42',tag:null},{t:'18:07',tag:null},{t:'18:37',tag:null},{t:'19:02',tag:null},{t:'19:37',tag:null},{t:'20:12',tag:null},{t:'20:47',tag:null},{t:'21:22',tag:null},{t:'21:57',tag:null},{t:'22:34',tag:null},{t:'23:14',tag:'FC'}],ret:[{t:'05:34',tag:null},{t:'05:59',tag:null},{t:'06:24',tag:null},{t:'06:49',tag:'FC VOLVO'},{t:'07:14',tag:null},{t:'07:39',tag:null},{t:'08:09',tag:null},{t:'08:44',tag:null},{t:'09:04',tag:null},{t:'09:24',tag:null},{t:'09:56',tag:null},{t:'10:28',tag:null},{t:'10:57',tag:null},{t:'11:29',tag:null},{t:'12:01',tag:null},{t:'12:33',tag:null},{t:'13:05',tag:null},{t:'13:37',tag:null},{t:'14:09',tag:null},{t:'14:41',tag:null},{t:'15:13',tag:null},{t:'15:33',tag:null},{t:'16:03',tag:null},{t:'16:28',tag:null},{t:'16:52',tag:null},{t:'17:42',tag:null},{t:'18:12',tag:null},{t:'18:47',tag:null},{t:'19:27',tag:null},{t:'20:02',tag:null},{t:'20:37',tag:null},{t:'21:12',tag:null},{t:'21:47',tag:null},{t:'22:22',tag:null},{t:'22:54',tag:null},{t:'23:34',tag:'FC'}]};
+    for(const dir in BUSES)BUSES[dir].forEach(b=>b.m=toMins(b.t));
+    const PERIODS=[{label:'Manhã',min:0,max:11*60+59},{label:'Tarde',min:12*60,max:17*60+59},{label:'Noite',min:18*60,max:24*60}];
+    const TAG_CLASSES={'JL':'jl','FC VOLVO':'fcv','FC':'fc'};
+    const DOM={go:{panel:document.getElementById('panel-go'),time:document.getElementById('smart-time-go'),count:document.getElementById('smart-count-go')},ret:{panel:document.getElementById('panel-ret'),time:document.getElementById('smart-time-ret'),count:document.getElementById('smart-count-ret')}};
+
+    function fmtCountdown(mins){if(mins<1)return'agora';if(mins<60)return`em ${mins} min`;const h=Math.floor(mins/60),m=mins%60;return m===0?`em ${h}h`:`em ${h}h ${m}min`;}
+    function renderPanel(dir,nowMins,nextBus){
+      let html='';
+      for(const period of PERIODS){
+        const buses=BUSES[dir].filter(b=>b.m>=period.min&&b.m<=period.max);
+        if(!buses.length)continue;
+        html+=`<div class="time-section"><div class="period-label">${period.label}</div><div class="times-grid">`;
+        buses.forEach((bus, idx)=>{
+          const isPast=bus.m<=nowMins,isNext=nextBus&&bus.t===nextBus.t;
+          const cls=`time-pill reveal-pill ${isPast?'past':''} ${isNext?'next-'+dir:''}`;
+          const tagHtml=bus.tag?`<span class="pill-tag ${TAG_CLASSES[bus.tag]||''}">${bus.tag}</span>`:'';
+          const delay = idx * 20; // 20ms de atraso entre cada pílula de horário
+          html+=`<div class="${cls}" style="animation-delay:${delay}ms">${bus.t}${tagHtml}</div>`;
+        });
+        html+=`</div></div>`;
+      }
+      DOM[dir].panel.innerHTML=html;
+    }
+    function updateSmartCard(dir,next,nowMins){const d=DOM[dir];if(!next){const first=BUSES[dir][0];d.time.textContent='Encerrado';d.count.textContent=first?'retoma às '+first.t:'sem serviço';d.time.style.fontSize='20px';d.time.style.color='var(--muted)';}else{d.time.textContent=next.t;d.count.textContent=fmtCountdown(next.m-nowMins);d.time.style.fontSize='';d.time.style.color='';}}
+    function refresh(){
+      const now=new Date(),nowMins=now.getHours()*60+now.getMinutes(),dow=now.getDay();
+      const isWeekend = (dow === 0 || dow === 6);
+
+      ['go','ret'].forEach(dir=>{
+        // Se for fim de semana, ignora a busca pelo próximo ônibus
+        const nextBus = isWeekend ? null : (BUSES[dir].find(b=>b.m>=nowMins)||null);
+        
+        renderPanel(dir, isWeekend ? -1 : nowMins, nextBus);
+        updateSmartCard(dir, nextBus, nowMins);
+        
+        if(isWeekend) DOM[dir].count.textContent = 'Indisponível hoje';
+      });
+
+      if(isWeekend && !document.getElementById('weekend-alert')){
+        const alert = document.createElement('div');
+        alert.id = 'weekend-alert';
+        alert.style.cssText = 'background:var(--accent-lt); color:var(--accent); padding:16px; border-radius:var(--radius); margin-bottom:24px; font-weight:700; text-align:center; border:1px solid var(--border); animation: fadeUp 0.4s ease;'; // Corrigido para usar var(--border)
+        alert.innerHTML = '⚠️ Atenção: Esta linha de ônibus não opera aos sábados e domingos.';
+        document.querySelector('main').prepend(alert);
+        document.querySelectorAll('.bus-panel').forEach(p => p.style.opacity = '0.5');
+      }
+    }
+    refresh(); setInterval(refresh, 30000);
+
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible') refresh();
+    });
+    window.addEventListener('pageshow', (e) => {
+      if (e.persisted) refresh();
+    });
+  </script>
+</body>
+</html>

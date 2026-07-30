@@ -398,53 +398,6 @@
 
       const norm = s => s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
 
-      // ── BUSCA TOLERANTE A ERROS DE DIGITAÇÃO ──────────────────
-      // Calcula a distância de edição (Levenshtein) entre duas strings.
-      function levenshtein(a, b) {
-        const m = a.length, n = b.length;
-        if (m === 0) return n;
-        if (n === 0) return m;
-        const dp = Array.from({ length: m + 1 }, () => new Array(n + 1).fill(0));
-        for (let i = 0; i <= m; i++) dp[i][0] = i;
-        for (let j = 0; j <= n; j++) dp[0][j] = j;
-        for (let i = 1; i <= m; i++) {
-          for (let j = 1; j <= n; j++) {
-            const cost = a[i - 1] === b[j - 1] ? 0 : 1;
-            dp[i][j] = Math.min(
-              dp[i - 1][j] + 1,     // remoção
-              dp[i][j - 1] + 1,     // inserção
-              dp[i - 1][j - 1] + cost // substituição
-            );
-          }
-        }
-        return dp[m][n];
-      }
-
-      // Verifica se "term" "combina" com algum trecho de "text", mesmo com
-      // letras erradas, faltando ou sobrando (ex: "portugml00" ~ "português").
-      function fuzzyMatch(text, term) {
-        if (!term) return true;
-        if (text.includes(term)) return true; // caminho rápido: substring exata
-
-        const tLen = term.length;
-        if (tLen < 3) return false; // termos muito curtos não usam fuzzy (evita ruído)
-
-        let best = Infinity;
-        const minW = Math.max(2, tLen - 3);
-        const maxW = Math.min(text.length, tLen + 3);
-
-        for (let w = minW; w <= maxW; w++) {
-          for (let i = 0; i + w <= text.length; i++) {
-            const dist = levenshtein(term, text.substr(i, w));
-            if (dist < best) best = dist;
-            if (best === 0) return true;
-          }
-        }
-
-        const threshold = Math.max(1, Math.floor(tLen * 0.45));
-        return best <= threshold;
-      }
-
 
       const highlight = (text, term) => {
         if (!term.trim()) return text;
@@ -457,7 +410,7 @@
         const term = norm(filtro).trim();
         
         const filtered = window.horariosAtendimento.filter(p => 
-          fuzzyMatch(norm(p.professor), term) || fuzzyMatch(norm(p.materia), term)
+          norm(p.professor).includes(term) || norm(p.materia).includes(term)
         );
         
         // Remove a bolinha de carregamento da barra

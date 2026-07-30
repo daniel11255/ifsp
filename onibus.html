@@ -49,68 +49,12 @@
     .legend-dot.fc{background:var(--green-lt);color:var(--green);border:1px solid var(--green-lt)}
     .legend-dot.fcv{background:var(--surface-2);color:var(--text);border:1px solid var(--border)}
 
-    /* ── ANIMAÇÕES EXCLUSIVAS DESTA PÁGINA (tema: estrada/ônibus) ── */
-    @keyframes busRollInLeft {
-      0%   { opacity: 0; transform: translateX(-46px) rotate(-2deg); }
-      65%  { opacity: 1; transform: translateX(4px) rotate(.5deg); }
-      100% { opacity: 1; transform: translateX(0) rotate(0); }
-    }
-    @keyframes busRollInRight {
-      0%   { opacity: 0; transform: translateX(46px) rotate(2deg); }
-      65%  { opacity: 1; transform: translateX(-4px) rotate(-.5deg); }
-      100% { opacity: 1; transform: translateX(0) rotate(0); }
-    }
-    @keyframes panelUnfold {
-      0%   { opacity: 0; transform: scaleY(.85); transform-origin: top center; }
-      100% { opacity: 1; transform: scaleY(1); }
-    }
-    @keyframes pillHop {
-      0%   { opacity: 0; transform: translateY(10px) scale(.7); }
-      55%  { opacity: 1; transform: translateY(-3px) scale(1.05); }
-      100% { opacity: 1; transform: translateY(0) scale(1); }
-    }
-    @keyframes legendSlideUp {
-      0%   { opacity: 0; transform: translateY(22px); }
-      100% { opacity: 1; transform: translateY(0); }
-    }
-    @keyframes dotPulseRing {
-      0%   { box-shadow: 0 0 0 0 currentColor; opacity: 1; }
-      75%  { box-shadow: 0 0 0 7px transparent; opacity: 0; }
-      100% { box-shadow: 0 0 0 7px transparent; opacity: 0; }
-    }
-    @keyframes nextBusBounce {
-      0%, 100% { transform: scale(1.06) translateY(0); }
-      50%      { transform: scale(1.06) translateY(-3px); }
-    }
-    @keyframes roadDash {
-      from { background-position: 0 0; }
-      to   { background-position: 48px 0; }
-    }
-
-    .smart-card.going     { animation: busRollInLeft  .6s cubic-bezier(.22,1,.36,1) both; position: relative; overflow: hidden; }
-    .smart-card.returning { animation: busRollInRight .6s .08s cubic-bezier(.22,1,.36,1) both; position: relative; overflow: hidden; }
-    .smart-card::after {
-      content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 3px;
-      background-image: repeating-linear-gradient(90deg, currentColor 0 18px, transparent 18px 32px);
-      opacity: .35; animation: roadDash 1.4s linear infinite;
-    }
-    .smart-card.going::after     { color: var(--accent); }
-    .smart-card.returning::after { color: var(--green); }
-
-    .status-dot { position: relative; }
-    .status-dot::after {
-      content: ''; position: absolute; inset: 0; border-radius: 50%;
-      box-shadow: 0 0 0 0 currentColor; animation: dotPulseRing 1.8s ease-out infinite;
-    }
-    .status-dot.go  { color: var(--accent); }
-    .status-dot.ret { color: var(--green); }
-
-    .bus-panel:nth-child(1) { animation: panelUnfold .55s .18s cubic-bezier(.22,1,.36,1) both; }
-    .bus-panel:nth-child(2) { animation: panelUnfold .55s .26s cubic-bezier(.22,1,.36,1) both; }
-    .legend-card { animation: legendSlideUp .5s .36s cubic-bezier(.22,1,.36,1) both; }
-    .reveal-pill { animation: pillHop .45s cubic-bezier(.22,1,.36,1) both; }
-    .time-pill.next-go, .time-pill.next-ret { animation: nextBusBounce 1.6s ease-in-out .5s infinite; }
-
+    .smart-card:nth-child(1){animation:reveal 0.6s cubic-bezier(0.2,1,0.3,1) both}
+    .smart-card:nth-child(2){animation:reveal 0.6s 0.1s cubic-bezier(0.2,1,0.3,1) both}
+    .bus-panel:nth-child(1){animation:reveal 0.7s 0.2s cubic-bezier(0.2,1,0.3,1) both}
+    .bus-panel:nth-child(2){animation:reveal 0.7s 0.3s cubic-bezier(0.2,1,0.3,1) both}
+    .legend-card{animation:fadeUp 0.6s 0.4s cubic-bezier(0.2,1,0.3,1) both}
+    .reveal-pill{animation:reveal 0.5s cubic-bezier(0.2,1,0.3,1) both}
     @media(max-width:680px){
       .topnav{padding:0 16px}main{padding:20px 12px 48px}.smart-row,.bus-columns{grid-template-columns:1fr}.smart-time{font-size:26px}
     }
@@ -235,7 +179,7 @@
       if(isWeekend && !document.getElementById('weekend-alert')){
         const alert = document.createElement('div');
         alert.id = 'weekend-alert';
-        alert.style.cssText = 'background:var(--accent-lt); color:var(--accent); padding:16px; border-radius:var(--radius); margin-bottom:24px; font-weight:700; text-align:center; border:1px solid var(--border); animation: legendSlideUp 0.45s cubic-bezier(.22,1,.36,1) both;'; // animação própria da página de ônibus
+        alert.style.cssText = 'background:var(--accent-lt); color:var(--accent); padding:16px; border-radius:var(--radius); margin-bottom:24px; font-weight:700; text-align:center; border:1px solid var(--border); animation: fadeUp 0.4s ease;'; // Corrigido para usar var(--border)
         alert.innerHTML = '⚠️ Atenção: Esta linha de ônibus não opera aos sábados e domingos.';
         document.querySelector('main').prepend(alert);
         document.querySelectorAll('.bus-panel').forEach(p => p.style.opacity = '0.5');

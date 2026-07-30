@@ -71,12 +71,37 @@
     .section-label { font-family: var(--mono); font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .15em; color: var(--muted); margin: 32px 0 16px; display: flex; align-items: center; gap: 12px; animation: fadeUp .45s .14s cubic-bezier(.22,1,.36,1) both; }
     .section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); opacity: 0.6; }
 
+    /* CARDS GRID */
+    .cards-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; animation: fadeUp .45s .18s cubic-bezier(.22,1,.36,1) both; }
+    .feature-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--sh); text-decoration: none; color: inherit; padding: 24px; display: flex; flex-direction: column; height: 100%; }
+    .card-icon { width: 48px; height: 48px; border-radius: 12px; flex-shrink: 0; background: var(--accent-lt); display: flex; align-items: center; justify-content: center; border: 1px solid rgba(var(--accent-rgb), 0.1); margin-bottom: 16px; }
+    .card-icon svg { width: 24px; height: 24px; fill: none; stroke: var(--accent); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    .card-bus      .card-icon { background: var(--surface-2);  border-color: var(--border); }
+    .card-bus      .card-icon svg { stroke: var(--text); }
+    .card-profs    .card-icon { background: var(--amber-lt);  border-color: rgba(198,140,26,0.1); }
+    .card-profs    .card-icon svg { stroke: var(--amber); }
+    .card-calendar .card-icon { background: #DBEAFE; border-color: rgba(37,99,235,0.1); }
+    .card-calendar .card-icon svg { stroke: #2563EB; }
+    .card-body  { flex: 1; display: flex; flex-direction: column; }
+    .card-title { font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 8px; letter-spacing: -.01em; }
+    .card-desc  { font-size: 12.5px; color: var(--muted); line-height: 1.5; margin-bottom: 16px; }
+    .card-cta   { margin-top: auto; font-family: var(--mono); font-size: 10px; font-weight: 700; color: var(--accent); letter-spacing: .06em; text-transform: uppercase; display: inline-flex; align-items: center; gap: 6px; padding-top: 12px; border-top: 1px solid var(--border); }
+    .card-cta svg { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; transition: transform .2s; }
+    .feature-card:hover .card-cta svg { transform: translateX(5px); }
+    .card-bus      .card-cta { color: var(--text); }
+    .card-profs    .card-cta { color: var(--amber); }
+    .card-calendar .card-cta { color: #2563EB; }
+
     /* ANIMATIONS */
     .clock-block    { animation: fadeUp .45s cubic-bezier(.22,1,.36,1) both; }
     .schedule-card  { animation: fadeUp .45s .08s cubic-bezier(.22,1,.36,1) both; }
+    @keyframes pulse-ring { 0% { box-shadow: 0 0 0 0 rgba(198,140,26,.4); } 70% { box-shadow: 0 0 0 8px rgba(198,140,26,0); } 100% { box-shadow: 0 0 0 0 rgba(198,140,26,0); } }
 
+    @media (max-width: 860px) { .cards-grid { grid-template-columns: repeat(2,1fr); } }
     @media (max-width: 680px) {
       .clock-time  { font-size: 32px; }
+      .cards-grid  { grid-template-columns: 1fr; gap: 14px; }
+      .feature-card { padding: 20px; }
       .sched-row   { grid-template-columns: 116px 1fr auto; gap: 10px; padding: 13px 16px; }
       .schedule-header { padding: 15px 16px; flex-direction: column; align-items: center; gap: 8px; text-align: center; }
       .schedule-header-left { justify-content: center; }
@@ -156,6 +181,37 @@
       <div id="bus-quick-rows"></div>
     </div>
 
+    <div class="section-label">Acesso Rápido</div>
+    <div class="cards-grid">
+      <a href="aulas.html" class="feature-card">
+        <div class="card-icon"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
+        <div class="card-body">
+          <div class="card-title">Grade de Aulas</div>
+          <div class="card-cta">Ver grade <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
+        </div>
+      </a>
+      <a href="calendario.html" class="feature-card card-calendar">
+        <div class="card-icon"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><path d="M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01"/></svg></div>
+        <div class="card-body">
+          <div class="card-title">Calendário</div>
+          <div class="card-cta">Abrir calendário <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
+        </div>
+      </a>
+      <a href="onibus.html" class="feature-card card-bus">
+        <div class="card-icon"><svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/><path d="M7 8h10M7 11h5"/></svg></div>
+        <div class="card-body">
+          <div class="card-title">Horários de Ônibus</div>
+          <div class="card-cta">Ver horários <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
+        </div>
+      </a>
+      <a href="horarios.html" class="feature-card card-profs">
+        <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-8 0v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+        <div class="card-body">
+          <div class="card-title">Atendimento de Professores</div>
+          <div class="card-cta">Ver professores <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
+        </div>
+      </a>
+    </div>
   </div>
 
   <footer></footer>

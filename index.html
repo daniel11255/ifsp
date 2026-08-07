@@ -68,6 +68,9 @@
     .bus-quick-link:hover { color: var(--accent); }
     .bus-quick-link svg { width: 11px; height: 11px; fill: none; stroke: currentColor; stroke-width: 2.5; }
     .sched-name .line-tag { font-family: var(--mono); font-size: 10px; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: .04em; margin-right: 6px; }
+    .sched-name .dir-dot { width: 7px; height: 7px; border-radius: 50%; display: inline-block; margin-right: 8px; vertical-align: middle; }
+    .sched-name .dir-dot.go  { background: var(--accent); }
+    .sched-name .dir-dot.ret { background: var(--green); }
 
     /* SECTION LABEL */
     .section-label { font-family: var(--mono); font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .15em; color: var(--muted); margin: 32px 0 16px; display: flex; align-items: center; gap: 12px; animation: fadeUp .45s .14s cubic-bezier(.22,1,.36,1) both; }
@@ -191,7 +194,7 @@
               <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
             </svg>
           </div>
-          <span class="schedule-eyebrow">Próximo Ônibus · Outras Linhas</span>
+          <span class="schedule-eyebrow">Próximos Ônibus · Outras Linhas</span>
         </div>
         <a href="onibus.html" class="bus-quick-link">Ver tudo <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
       </div>
@@ -477,65 +480,63 @@
       return 'weekday';
     }
 
-    // Procura, dentre as 3 linhas (ida e volta), o próximo horário a partir de nowMins,
-    // dentro do tipo de dia informado. Retorna null se não houver mais nenhum hoje.
-    function findNextAcrossOtherLines(nowMins, daytype) {
-      let best = null;
+    // Junta os horários de uma direção (go = bairro → terminal, ret = terminal
+    // → bairro) das 3 linhas em uma única lista, ordenada por horário.
+    function mergeOtherLinesByDir(daytype, dir) {
+      const merged = [];
       for (const id in OTHER_LINES) {
         const line = OTHER_LINES[id];
-        const sched = line.schedules[daytype];
-        for (const dir of ['go', 'ret']) {
-          const next = sched[dir].find(b => b.m >= nowMins);
-          if (next && (!best || next.m < best.m)) {
-            best = { lineName: line.name, label: line.labels[dir], t: next.t, m: next.m };
-          }
+        for (const b of line.schedules[daytype][dir]) {
+          merged.push({ lineName: line.name, label: line.labels[dir], t: b.t, m: b.m });
         }
       }
-      return best;
+      merged.sort((a, b) => a.m - b.m);
+      return merged;
     }
 
-    // Primeiro horário do dia (ida ou volta, entre as 3 linhas) para um tipo de dia,
-    // usado como fallback quando já passou o último ônibus de hoje.
-    function findEarliestForOtherLines(daytype) {
-      let best = null;
-      for (const id in OTHER_LINES) {
-        const line = OTHER_LINES[id];
-        const sched = line.schedules[daytype];
-        for (const dir of ['go', 'ret']) {
-          const first = sched[dir][0];
-          if (first && (!best || first.m < best.m)) {
-            best = { lineName: line.name, label: line.labels[dir], t: first.t, m: first.m };
-          }
-        }
+    // Retorna as próximas `count` partidas de uma direção, a partir de agora.
+    // Se não sobrarem `count` horários hoje, completa com os primeiros horários
+    // de amanhã (recalculando o tipo de dia de amanhã corretamente).
+    function getNextDepartures(dir, count) {
+      const now = new Date();
+      const nowMins = now.getHours() * 60 + now.getMinutes();
+      const daytype = getLineDaytype(now);
+
+      const todayList = mergeOtherLinesByDir(daytype, dir).filter(b => b.m >= nowMins);
+      let results = todayList.slice(0, count).map(b => ({ ...b, isTomorrow: false }));
+
+      if (results.length < count) {
+        const tomorrow = new Date(now.getTime() + 24 * 60 * 60 * 1000);
+        const tomorrowDaytype = getLineDaytype(tomorrow);
+        const tomorrowList = mergeOtherLinesByDir(tomorrowDaytype, dir);
+        const need = count - results.length;
+        results = results.concat(tomorrowList.slice(0, need).map(b => ({ ...b, isTomorrow: true })));
       }
-      return best;
+      return results;
     }
 
     function renderOtherBusQuick() {
-      const n = new Date();
-      const nowMins = n.getHours() * 60 + n.getMinutes();
-      const daytype = getLineDaytype(n);
+      const now = new Date();
+      const nowMins = now.getHours() * 60 + now.getMinutes();
 
-      let next = findNextAcrossOtherLines(nowMins, daytype);
-      let isTomorrow = false;
+      const nextGo  = getNextDepartures('go', 2);
+      const nextRet = getNextDepartures('ret', 2);
 
-      if (!next) {
-        const tomorrow = new Date(n.getTime() + 24 * 60 * 60 * 1000);
-        const tomorrowDaytype = getLineDaytype(tomorrow);
-        next = findEarliestForOtherLines(tomorrowDaytype);
-        isTomorrow = true;
+      function rowHtml(dep, dir) {
+        if (!dep) {
+          return `<div class="sched-row"><div class="sched-time">--:--</div><div class="sched-name"><span class="dir-dot ${dir}"></span>Sem horários</div><span class="sched-pill pill-done">Indisponível</span></div>`;
+        }
+        const timeText = dep.isTomorrow ? `${dep.t} (amanhã)` : dep.t;
+        const pillText  = dep.isTomorrow ? 'amanhã' : fmtBusCountdown(dep.m - nowMins);
+        return `<div class="sched-row"><div class="sched-time">${timeText}</div><div class="sched-name"><span class="dir-dot ${dir}"></span><span class="line-tag">${dep.lineName}</span>${dep.label}</div><span class="sched-pill pill-next">${pillText}</span></div>`;
       }
 
-      let rowHtml;
-      if (next) {
-        const timeText = isTomorrow ? `${next.t} (amanhã)` : next.t;
-        const pillText = isTomorrow ? 'amanhã' : fmtBusCountdown(next.m - nowMins);
-        rowHtml = `<div class="sched-row"><div class="sched-time">${timeText}</div><div class="sched-name"><span class="line-tag">${next.lineName}</span>${next.label}</div><span class="sched-pill pill-next">${pillText}</span></div>`;
-      } else {
-        rowHtml = `<div class="sched-row"><div class="sched-time">--:--</div><div class="sched-name">Sem horários</div><span class="sched-pill pill-done">Indisponível</span></div>`;
-      }
+      const rows = [
+        rowHtml(nextGo[0], 'go'),  rowHtml(nextGo[1], 'go'),
+        rowHtml(nextRet[0], 'ret'), rowHtml(nextRet[1], 'ret')
+      ];
 
-      document.getElementById('other-bus-quick-rows').innerHTML = rowHtml;
+      document.getElementById('other-bus-quick-rows').innerHTML = rows.join('');
     }
 
     tickClock();

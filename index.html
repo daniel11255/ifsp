@@ -528,7 +528,7 @@
         }
         const timeText = dep.isTomorrow ? `${dep.t} (amanhã)` : dep.t;
         const pillText  = dep.isTomorrow ? 'amanhã' : fmtBusCountdown(dep.m - nowMins);
-        return `<div class="sched-row"><div class="sched-time">${timeText}</div><div class="sched-name"><span class="dir-dot ${dir}"></span><span class="line-tag">${dep.lineName}</span>${dep.label}</div><span class="sched-pill pill-next">${pillText}</span></div>`;
+        return `<div class="sched-row"><div class="sched-time">${timeText}</div><div class="sched-name"><span class="dir-dot ${dir}"></span>${dep.label}</div><span class="sched-pill pill-next">${pillText}</span></div>`;
       }
 
       const rows = [

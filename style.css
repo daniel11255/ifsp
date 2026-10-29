@@ -1,0 +1,140 @@
+/* =====================================================================
+   Portal 1INFO-2 — estilo base (sólido, limpo, pensado para celular)
+   Carregado DEPOIS do css da página.
+   ===================================================================== */
+
+:root {
+  --bg: #F6F2ED;
+  --surface: #FFFFFF;
+  --surface-2: #F1EBE4;
+  --border: #E4DBD1;
+  --text: #1E1711;
+  --muted: #6E6055;
+  --accent: #BC5B27;
+  --accent-rgb: 188, 91, 39;
+  --accent-lt: rgba(188,91,39,.12);
+  --accent-dk: #8C401C;
+  --green: #2D7A50;
+  --green-lt: rgba(45,122,80,.13);
+  --amber: #C68C1A;
+  --amber-lt: rgba(198,140,26,.16);
+  --danger: #B42318;
+  --slate: #7A8798;
+  --slate-lt: rgba(148,163,184,.2);
+
+  --radius: 16px;
+  --sh: 0 1px 2px rgba(60,40,20,.06), 0 2px 8px rgba(60,40,20,.04);
+  --sans: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Inter', system-ui, sans-serif;
+  --display: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', system-ui, sans-serif;
+  --mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #121110;
+  --surface: #1B1917;
+  --surface-2: #252220;
+  --border: #302C29;
+  --text: #F1E8DE;
+  --muted: #A99C90;
+  --accent: #F08A4B;
+  --accent-rgb: 240, 138, 75;
+  --accent-lt: rgba(240,138,75,.16);
+  --accent-dk: #FFB088;
+  --green: #4CC38A;
+  --green-lt: rgba(76,195,138,.15);
+  --amber: #D4A030;
+  --amber-lt: rgba(230,170,50,.15);
+  --danger: #F87171;
+  --slate: #8A97A6;
+  --slate-lt: rgba(148,163,184,.14);
+  --sh: none;
+}
+
+/* ── Base ───────────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { -webkit-text-size-adjust: 100%; -webkit-tap-highlight-color: transparent; scroll-behavior: smooth; }
+body {
+  background: var(--bg); color: var(--text); font-family: var(--sans); min-height: 100dvh;
+  -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
+  padding-bottom: calc(96px + env(safe-area-inset-bottom, 0px));
+}
+button, input, select, textarea { font: inherit; }
+button { cursor: pointer; }
+button, a, label { touch-action: manipulation; }
+a { color: inherit; }
+footer { display: none; }
+::selection { background: rgba(var(--accent-rgb), .28); }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 8px; }
+h1, .page-title { font-family: var(--display); font-weight: 800; letter-spacing: -.03em; font-size: clamp(26px, 4.2vw, 34px); line-height: 1.1; }
+
+/* ── Barra superior (gerada por core.js) ────────────────────────────── */
+.topnav {
+  position: sticky; top: 0; z-index: 200;
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  height: 56px; padding: 0 16px; padding-top: env(safe-area-inset-top, 0px); box-sizing: content-box;
+  background: var(--bg); border-bottom: 1px solid var(--border);
+}
+.nav-brand { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+.nav-logo { width: 32px; height: 32px; border-radius: 9px; background: var(--accent); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.nav-logo svg { width: 16px; height: 16px; fill: none; stroke: #fff; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.nav-title { font-size: 15px; font-weight: 700; letter-spacing: -.01em; }
+.nav-tag { font-family: var(--mono); font-size: 10px; color: var(--accent); padding: 2px 7px; border-radius: 6px; border: 1px solid var(--border); background: var(--surface); }
+.theme-btn { width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; color: var(--text); background: var(--surface); border: 1px solid var(--border); }
+.theme-btn:active { background: var(--surface-2); }
+.theme-btn svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.theme-btn .i-sun { display: none; }
+html[data-theme="dark"] .theme-btn .i-sun { display: block; }
+html[data-theme="dark"] .theme-btn .i-moon { display: none; }
+
+/* ── Barra de abas flutuante ────────────────────────────────────────── */
+.tabbar {
+  position: fixed; left: 50%; transform: translateX(-50%); z-index: 190; display: flex; gap: 4px;
+  bottom: calc(14px + env(safe-area-inset-bottom, 0px));
+  width: min(calc(100% - 32px), 420px); padding: 6px;
+  background: var(--surface); border: 1px solid var(--border); border-radius: 999px;
+  box-shadow: 0 8px 24px rgba(60,40,20,.16), 0 2px 6px rgba(60,40,20,.08);
+}
+html[data-theme="dark"] .tabbar { box-shadow: 0 8px 24px rgba(0,0,0,.55); }
+.tabbar-item {
+  flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
+  padding: 8px 4px; border-radius: 999px; text-decoration: none; color: var(--muted); font-size: 11px; font-weight: 600;
+  transition: background-color .2s, color .2s;
+}
+.tabbar-item svg { width: 21px; height: 21px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.tabbar-item[aria-current="page"] { color: var(--accent); background: var(--accent-lt); }
+.tabbar-item:active { transform: scale(.95); }
+
+/* ── Cartões e tabelas (base compartilhada) ─────────────────────────── */
+.schedule-card, .bus-panel, .smart-card, .legend-card, .corujao-card {
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--sh);
+}
+.today-banner { background: var(--accent-lt); border: 1px solid var(--border); border-radius: var(--radius); }
+th { background: var(--accent-lt); color: var(--accent); }
+th.today-col { background: var(--accent); color: #fff; }
+td.today-col { background: rgba(var(--accent-rgb), .06); }
+tbody tr:hover td { background: var(--surface-2); }
+html[data-theme="dark"] th { color: var(--accent-dk); }
+html[data-theme="dark"] th.today-col { color: #fff; }
+.live-badge .live-dot { animation: blink 1.5s ease-in-out infinite; }
+
+/* ── Controles ──────────────────────────────────────────────────────── */
+.line-btn, .daytype-btn, .time-pill { transition: background-color .15s, color .15s, border-color .15s; }
+.line-btn:active, .daytype-btn:active { transform: scale(.97); }
+
+/* ── Toast ──────────────────────────────────────────────────────────── */
+.toast {
+  position: fixed; left: 50%; bottom: calc(100px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); z-index: 10000;
+  max-width: calc(100% - 32px); text-align: center; font-size: 13px; font-weight: 700; pointer-events: none;
+  background: var(--text); color: var(--bg); padding: 10px 16px; border-radius: 12px;
+}
+
+/* ── Animações ──────────────────────────────────────────────────────── */
+@keyframes fadeUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+@keyframes blink  { 0%, 100% { opacity: 1; } 50% { opacity: .3; } }
+@keyframes pulse  { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: .5; transform: scale(.75); } }
+@keyframes reveal { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+}
+@media (hover: none) { tbody tr:hover td { background: transparent; } }
